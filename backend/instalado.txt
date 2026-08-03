@@ -1,0 +1,22 @@
+10.14.87.200 Zona Industrial - Valencia	ene-26	0	-	Instalado
+10.10.60.200 Guanare	jul-26	11	-	Instalado
+10.11.83.200 Oriente	Guaraguao	jul-26	0	-	Instalado
+10.10.64.200 Occidente	Plaza Republica	jul-26	152	-	Instalado
+10.10.52.202 Centro Occidental	Sambil Barquisimeto	jul-26	0	-	Instalado
+10.10.78.201 Metro I	Catia La Mar	jul-26	0	-	Instalado
+10.140.0.200 Metro I	Catia La Mar	jul-26	0	-	Instalado
+10.10.8.201 Centro Occidental	Las Tejerias	jul-26	793	-	Instalado
+10.10.185.200 Metro II	Corporación Andina De Fomento (CAF)	jul-26	0	-	Instalado
+10.10.170.202 Centro Occidental	San Felipe	jul-26	0	-	Instalado
+10.11.73.203 Centro Occidental	Av. Bolivar - Valencia	jul-26	0	-	Instalado
+10.10.150.201 Centro Occidental	Sambil Valencia	jul-26	0	-	Instalado
+10.14.90.200 Metro I	Bello Monte	jul-26	322	-	Instalado
+10.14.21.200 Metro I	Bello Monte	jul-26	322	-	Instalado
+10.11.73.202 Centro Occidental	Av. Bolivar - Valencia	jul-26	0	-	Instalado
+10.10.150.200 Centro Occidental	Sambil Valencia	jul-26	0	-	Instalado
+10.10.52.201 Centro Occidental	Sambil Barquisimeto	jul-26	0	-	Instalado
+10.10.78.200 Metro I	Catia La Mar	jul-26	0	Instalado
+10.10.211.201 Metro II	Chuao	ene-26	3.147	Instalado
+10.14.89.200 Centro Occidental	Valle De La Pascua	jul-26	0	Instalado
+10.10.164.200 Occidente	C. C. Lago Mall	jul-26	0	Instalado
+10.10.189.201 Centro Occidental	CIMA Barinas	jul-26	2	Instalado

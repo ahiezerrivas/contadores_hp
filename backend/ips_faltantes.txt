@@ -1,0 +1,105 @@
+10.0.31.49
+10.0.33.200
+10.0.110.200
+10.11.29.205
+10.10.6.202 Av. Francisco Solano	jul-26	0	-	Cierre temporal
+10.11.29.204 San Francisco (H)	jul-26	0	-	Pendiente Retiro
+10.14.72.200 Cierre definitivo
+10.14.12.201 San Cristobal II	jul-26	0	-	Cierre definitivo
+10.10.100.110 Lomas Del Este	jul-26	0	-	Cierre definitivo
+10.10.163.200 Lecherias	jul-26	0	-	Cierre temporal
+10.10.230.200 Barquisimeto	jul-26	0	-	Pendiente Retiro
+10.10.141.201 Metro II	Altamira	jul-26	0	-	Cierre definitivo
+10.10.145.200 Metro I	La Guaira	jul-26	0	-	Cierre temporal
+10.10.145.202 Metro I	La Guaira	jul-26	0	-	Cierre temporal
+10.11.13.201 Metro I	La Candelaria	jul-26	0	-	Cierre definitivo
+10.11.13.200 Metro I	La Candelaria	jul-26	0	-	Cierre definitivo
+10.10.64.200 Occidente	Plaza Republica	jul-26	152	-	Instalado
+10.10.188.201 Metro I	Caraballeda	jul-26	0	-	Cierre temporal
+10.10.40.200 Metro II	San Ignacio	jul-26	0	-	Cierre temporal
+10.11.28.203 Metro I	Av. Presidente Medina	jul-26	0	-	Cierre definitivo
+10.14.90.201 Metro I	Bello Monte	jul-26	0	-	Pendiente Retiro
+10.10.162.202 Metro II	C.C. Lider	jul-26	0	-	Pendiente Retiro
+10.10.77.10 Metro II	Macaracuay	jul-26	0	-	Cierre temporal
+10.10.77.201 Metro II	Macaracuay	jul-26	0	-	Cierre temporal
+10.10.3.201 Metro II	Boleita	jul-26	0	-	Cierre definitivo
+10.10.3.200 Metro II	Boleita	jul-26	0	-	Cierre definitivo
+10.10.68.201 Metro I	La Yaguara	jul-26	0	-	Cierre temporal
+10.10.186.200 Centro Occidental	Las Delicias	jul-26	0	-	Pendiente Retiro
+10.10.153.202 Centro Occidental	Colonia Tovar	jul-26	0	-	Cierre temporal
+10.11.19.200 Centro Occidental	Tucupido	jul-26	0	-	Cierre temporal
+10.11.19.201 Centro Occidental	Tucupido	jul-26	0	-	Cierre temporal
+10.11.15.201 Centro Occidental	Calabozo	jul-26	0	-	Pendiente Retiro
+10.14.3.202 Centro Occidental	Barquisimeto Centro	ene-26	0	-	Cierre temporal
+10.14.87.203 Centro Occidental	Zona Industrial - Valencia	ene-26	0	-	Pendiente Retiro
+10.10.12.202 Metro II	C.C. Milenium	jul-26	0	-	Pendiente Retiro
+10.11.24.201 Oriente	San Simon - Maturin	jul-26	0	-	Pendiente Retiro
+10.10.44.201 Metro II	Buenaventura	jul-26	0	-	Cierre temporal
+10.14.44.201 Centro Occidental	Valencia Norte	jul-26	0	-	Pendiente Retiro
+10.10.85.202 Metro II	Chacao	jul-26	0	-	cierre temporal
+10.10.220.201 Centro Occidental	C.C. Buenaventura Acarigua	jul-26	0	-	Cierre temporal
+10.10.6.201 Metro I	Av. Francisco Solano	jul-26	0	-	Cierre temporal
+10.14.21.201 Centro Occidental	Plaza Flores	jul-26	0	-	cierre definitivo
+10.10.85.200 Metro II	Chacao	jul-26	0	-	Cierre temporal
+10.14.72.201 Metro I	Casa Bera	jul-26	0	-	Cierre definitivo
+10.10.55.200 Centro Occidental	Heinz San Joaquin	jul-26	0	-	Cierre definitivo
+10.11.43.110 Centro Occidental	Vicson	jul-26	0	-	Cierre temporal
+10.11.28.201 Metro I	Av. Presidente Medina	jul-26	0	-	Cierre definitivo
+10.10.100.208 Centro Occidental	Lomas del Este	jul-26	0	-	cierre definitivo
+10.10.42.203 Oriente	Orinokia Mall	jul-26	0	-	Cierre definitivo
+10.10.100.202 Centro Occidental	Lomas Del Este	jul-26	0	-	cierre definitivo
+10.10.79.200 Oriente	Puerto Ordaz - Centro	jul-26	0	-	Cierre temporal
+10.14.87.201 Centro Occidental	Zona Industrial - Valencia	ene-26	0	-	Pendiente Retiro
+10.10.212.200 Oriente	Refinería Pto. La Cruz	jul-26	0	-	Cierre temporal
+10.10.169.200 Oriente	San Tome	jul-26	0	-	Cierre temporal
+10.14.94.201 Oriente	Matanzas	jul-26	0	-	Cierre temporal
+10.10.92.200 Oriente	Campo Norte - Anaco	ene-26	0	-	Cierre temporal
+10.10.216.200 Oriente	Corp. Punta De Mata	jul-26	0	-	Cierre temporal
+10.10.56.201 Oriente	Unare - Pto. Ordaz	jul-26	0	-	Cierre temporal
+10.10.56.200 Oriente	Unare - Pto. Ordaz	jul-26	0	-	Cierre temporal
+10.10.246.200 Centro Occidental	Av. Libertador - Barquisimeto	ene-26	0	-	Cierre definitivo
+10.11.33.201 Oriente	Irapa	jul-26	0	-	Cierre temporal
+10.10.95.201 Oriente	Upata	jul-26	0	-	Cierre temporal
+10.10.95.200 Oriente	Upata	jul-26	0	-	Cierre temporal
+10.10.18.201 Occidente	Sambil San Cristobal	jul-26	0	cierre definitivo
+10.10.160.203 Oriente	C. C. Monagas Plaza	jul-26	0	Cierre temporal
+10.11.22.201 Oriente	Av. Bermudez Cumana	jul-26	0	Cierre temporal
+10.11.8.201 Oriente	4 De Mayo	jul-26	0	Cierre temporal
+10.10.141.200 Metro II	Altamira	jul-26	0	Cierre definitivo
+10.10.144.204 Oriente	Boulevard Sucre	jul-26	0	Cierre temporal
+10.10.144.203 Oriente	Boulevard Sucre	jul-26	0	Cierre temporal
+10.14.13.200 Occidente	Valera Centro	jul-26	0	Cierre temporal
+10.14.13.201 Occidente	Valera Centro	jul-26	0	Cierre temporal
+10.11.39.201 Occidente	Zona Industrial II - Maracaibo	jul-26	0	Pendiente Retiro
+10.10.194.201 Occidente	5 De Julio	jul-26	0	Cierre temporal
+10.10.194.202 Occidente	5 De Julio	jul-26	0	Cierre temporal
+10.14.19.200 Oriente	Maturin II	jul-26	1.055	Embalada
+10.14.89.200 Centro Occidental	Valle De La Pascua	jul-26	0	Instalado
+10.10.197.200 Metro II	La Urbina	jul-26	0	Cierre temporal
+10.11.67.225 Centro Occidental	Barinas Centro	jul-26	0	Cierre temporal
+10.11.67.226 Centro Occidental	Barinas Centro	jul-26	0	Cierre temporal
+10.11.61.200 Centro Occidental	Carora	jul-26	0	Cierre temporal
+10.10.32.201 Occidente	Bachaquero	jul-26	0	Cierre definitivo
+10.10.154.200 Occidente	Mene Grande	jul-26	0	Cierre temporal
+10.10.44.200 Metro II	Buenaventura	jul-26	0	Cierre temporal
+10.11.5.202 Occidente	Plaza Alonso De Ojeda	jul-26	0	Cierre definitivo
+10.10.4.201 Occidente	Delicias Norte - Maracaibo	ene-26	0	Cierre definitivo
+10.10.4.200 Occidente	Delicias Norte - Maracaibo	ene-26	0	Cierre definitivo
+10.10.33.200 Occidente	Las Galerias	jul-26	0	Cierre definitivo
+10.10.33.201 Occidente	Las Galerias	jul-26	0	Cierre definitivo
+10.10.210.200 Occidente	Machiques	jul-26	0	Cierre temporal
+10.10.50.200 Occidente	Ejido	jul-26	0	Cierre definitivo
+10.10.50.201 Occidente	Ejido	jul-26	0	Cierre definitivo
+10.10.155.200 Occidente	Av. Las Américas	jul-26	0	Cierre temporal
+10.11.17.208 Occidente	San Juan De Colon	jul-26	0	Cierre definitivo
+10.11.45.200 Occidente	Paramillo	jul-26	0	Cierre definitivo
+10.11.45.201 Occidente	Paramillo	jul-26	0	Cierre temporal
+10.10.11.200 Metro II	C.C. Tolon las Mercedes	jul-26	0	Pendiente Retiro
+10.14.35.202 Metro I	Propatria	jul-26	0	Cierre temporal
+10.14.66.201 Centro Occidental	Maracay II	jul-26	0	Cierre temporal
+10.10.193.201 Oriente	Caripito	jul-26	0	Cierre temporal
+10.11.10.201 Metro II	Santa Fe	jul-26	0	Cierre temporal
+10.11.10.200 Metro II	Santa Fe	jul-26	0	Cierre temporal
+10.14.81.201 Metro II	Universidad Simon Bolivar	jul-26	0	Cierre temporal
+10.11.35.200 Metro II	C. C. Manzanares	jul-26	0	Cierre temporal
+10.14.12.200 Occidente	San Cristobal II	jul-26	0	Cierre definitivo

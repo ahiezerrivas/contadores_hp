@@ -1,0 +1,325 @@
+Metro I	I.E.S.A	9948	Activa
+Oriente	Maturin La Cascada	9503	Activa
+Occidente	Las Tapias	9892	Activa
+Metro I	San Francisco (H)	9211	Activa
+Metro I	Av. Francisco Solano	9214	Cierre temporal
+Metro I	San Francisco (H)	9211	Activa
+Oriente	Las Garzas	9655	Activa
+Metro I	Hosp. Clinicas Caracas	9935	Activa
+Centro Occidental	Guanare	9832	Activa
+Occidente	Mérida	9822	Activa
+Metro I	Santa Mónica	9232	Activa
+Metro I	San Francisco (H)	9211	Activa
+Metro II	El Rosal	9224	Activa
+Metro II	El Rosal	9224	Activa
+Metro I	Casa Bera	9203	Cierre definitivo
+Occidente	Barrio Obrero	9963	Activa
+Occidente	La Concordia	9837	Activa
+Occidente	San Cristobal II	9895	Cierre definitivo
+Centro Occidental	Plaza Bolivar	9410	Activa
+Centro Occidental	San Diego	9467	Activa
+Centro Occidental	Lomas Del Este	9420	Cierre definitivo
+Metro II	Concresa	9231	Activa
+Centro Occidental	El Recreo	9425	Activa
+Metro II	Centro Plaza	9294	Activa
+Metro II	La Trinidad	9228	Activa
+Metro II	Universidad Metropolitana	9927	Activa
+Oriente	Lecherias	9538	Cierre temporal
+Centro Occidental	San Blas	9430	Activa
+Centro Occidental	Barquisimeto	9833	Activa
+Centro Occidental	Barinas  	9831	Activa
+Metro II	Altamira	9221	Cierre definitivo
+Metro I	Multiplazas El Paraiso	9264	Activa
+Metro I	La Guaira	9241	Cierre temporal
+Metro I	La Guaira	9241	Cierre temporal
+Metro II	CMD La Trinidad	9940	Activa
+Occidente	Sambil Paraguana	9499	Activa
+Oriente	Guaraguao	9567	Activa
+Occidente	Coro	9826	Activa
+Metro I	La Candelaria	9252	Cierre definitivo
+Metro I	La Candelaria	9252	Cierre definitivo
+Occidente	Plaza Republica	9813	Activa
+Centro Occidental	Alianza Mall Guacara	9485	Activa
+Centro Occidental	Puerto Cabello	9470	Activa
+Metro I	Sede Principal	9219	Activa
+Occidente	Ciudad Ojeda	9816	Activa
+Occidente	Santa Bárbara Del Zulia	9814	Activa
+Occidente	La Limpia	9884	Activa
+Metro I	Caraballeda	9268	Cierre temporal
+Metro II	San Ignacio	9269	Cierre temporal
+Metro I	Av. Presidente Medina	9905	Cierre definitivo
+Metro II	C.C. Tolon las Mercedes	9270	Activa
+Metro II	C.C. Tolon las Mercedes	9270	Activa
+Centro Occidental	Sambil Barquisimeto	9446	Activa
+Oriente	Cumana	9630	Activa
+Metro I	Bello  Monte	9272	Activa
+Oriente	Puerto La Cruz	9610	Activa
+Metro I	Quinta Crespo	9299	Activa
+Metro II	C.C. Lider	9282	Activa
+Oriente	Las Garzas	9655	Activa
+Metro II	C.C. Lider	9282	Activa
+Metro I	Ucab	9929	Activa
+Metro II	Macaracuay	9283	Cierre temporal
+Metro II	Macaracuay	9283	Cierre temporal
+Metro II	La Urbina	9284	Cierre temporal
+Metro II	La Urbina	9284	Cierre temporal
+Oriente	Carupano	9570	Activa
+Metro II	La Trinidad	9228	Activa
+Metro I	Centro Médico II	9914	Activa
+Metro I	Catia La Mar	9226	Activa
+Occidente	Bella Vista	9818	Activa
+Metro II	Altamira (Mercantil Arte y Cultura)	9221	Cierre definitivo
+Centro Occidental	Las Tejerias	9311	Activa
+Metro II	Terrazas Del Ávila	9218	Activa
+Occidente	Villa Del Rosario	9827	Activa
+Centro Occidental	La Morita	9397	Activa
+Metro II	Los Ruices	9238	Activa
+Metro II	Boleita	9295	Cierre definitivo
+Metro II	Boleita	9295	Cierre definitivo
+Metro I	La Yaguara	9297	Cierre temporal
+Centro Occidental	Turen	9858	Activa
+Centro Occidental	Las Delicias 	9312	Activa
+Centro Occidental	San Fernando De Apure	9360	Activa
+Centro Occidental	Araure	9834	Activa
+Centro Occidental	La Victoria	9330	Activa
+Centro Occidental	Las Delicias 	9312	Activa
+Occidente	Plaza Republica	9813	Activa
+Metro II	Corporación Andina De Fomento (CAF)	9260	Activa
+Oriente	C.C. Sambil Margarita	9555	Activa
+Metro II	Guarenas	9291	Activa
+Metro II	Centro Plaza	9294	Activa
+Centro Occidental	Colonia Tovar	9336	Cierre temporal
+Metro II	Higuerote	9290	Activa
+Metro II	C.C.C.T. II	9441	Activa
+Metro I	Charallave	9250	Activa
+Centro Occidental	Tucupido	9350	Cierre temporal
+Centro Occidental	Tucupido	9350	Cierre temporal
+Metro I	Sede Principal	9219	Activa
+Metro II	Chuao	9271	Activa
+Centro Occidental	Calabozo	9392	Activa
+Centro Occidental	San Felipe	9835	Activa
+Centro Occidental	Terepaima cabudare	9444	Activa
+Oriente	El Tigre	9540	Activa
+Centro Occidental	San Juan De Los Morros	9370	Activa
+Metro I	Caricuao	9263	Activa
+Metro I	C. C. Uslar	9907	Activa
+Occidente	Cabimas	9815	Activa
+Centro Occidental	El Recreo	9425	Activa
+Oriente	Anaco	9580	Activa
+Oriente	Barcelona	9560	Activa
+Centro Occidental	Av. Bolivar - Valencia	9471	Cierre temporal
+Metro II	Plaza Las Americas	9289	Activa
+Centro Occidental	Barquisimeto	9833	Activa
+Oriente	Paseo Orinoco	9612	Activa
+Metro I	Principal - Sambil La Candelaria	9217	Activa
+Metro I	Av. España	9261	Activa
+Oriente	Barcelona	9560	Activa
+Metro II	C.C. Milenium	9911	Activa
+Centro Occidental	Sambil Valencia	9461	Activa
+Oriente	Maturin II	9615	Activa
+Oriente	Las Garzas	9655	Activa
+Centro Occidental	El Recreo	9425	Activa
+Oriente	San Simon - Maturin	9675	Activa
+Metro II	Buenaventura	9908	Cierre temporal
+Metro II	Sambil Chacao	9229	Activa
+Oriente	Maturin	9530	Activa
+Centro Occidental	Valencia Norte	9429	Cierre temporal
+Oriente	Terranova	9536	Activa
+Metro I	Principal - Sambil La Candelaria	9217	Activa
+Centro Occidental	Barquisimeto	9833	Activa
+Metro II	C.C. Lider	9282	Activa
+Metro I	Sabana Grande	9213	Activa
+Metro II	Chacao	9234	Cierre temporal
+Metro II	La Castellana	9259	Activa
+Centro Occidental	C.C. Buenaventura Acarigua	9445	Cierre temporal
+Metro I	Av. Francisco Solano	9214	Cierre temporal
+Occidente	Mérida	9822	Activa
+Metro I	Bello  Monte	9272	Activa
+Metro II	Seguros Mercantil	9936	Activa
+Occidente	Glorias Patrias 	9836	Activa
+Metro II	El Rosal	9224	Activa
+Metro I	Santa Mónica	9232	Activa
+Centro Occidental	Plaza Flores	9469	Cierre definitivo
+Centro Occidental	Plaza Flores	9469	Cierre definitivo
+Oriente	Maturin	9530	Activa
+Metro II	Chacao	9234	Cierre temporal
+Occidente	Las Tapias	9892	Activa
+Centro Occidental	San Diego	9467	Activa
+Metro I	Casa Bera	9203	Cierre definitivo
+Centro Occidental	Heinz San Joaquin	9474	Cierre definitivo
+Centro Occidental	Vicson	9477	Cierre temporal
+Metro I	Av. Presidente Medina	9905	Cierre definitivo
+Centro Occidental	El Recreo	9425	Activa
+Centro Occidental	El Recreo	9425	Activa
+Centro Occidental	Lomas del Este	9420	Cierre definitivo
+Centro Occidental	Plaza Bolivar	9410	Activa
+Centro Occidental	Av. Bolivar - Valencia	9471	Cierre temporal
+Oriente	Orinokia Mall	9504	Cierre definitivo
+Centro Occidental	Bejuma	9440	Activa
+Centro Occidental	Lomas Del Este	9420	Cierre definitivo
+Centro Occidental	Puerto Cabello	9470	Activa
+Centro Occidental	San Carlos	9472	Activa
+Oriente	Puerto Ordaz  - Centro	9518	Cierre temporal
+Oriente	Paseo Orinoco	9612	Activa
+Centro Occidental	San Blas	9430	Activa
+Oriente	Maturin	9530	Activa
+Centro Occidental	Sambil Valencia	9461	Activa
+Centro Occidental	Shopping Center	9405	Activa
+Centro Occidental	El Recreo	9425	Activa
+Metro I	San Francisco (H)	9211	Activa
+Metro I	Los Teques II	9345	Activa
+Centro Occidental	Las Delicias 	9312	Activa
+Occidente	Barrio Obrero	9963	Activa
+Oriente	Refinería Pto. La Cruz	9541	Cierre temporal
+Oriente	San Tome	9543	Cierre temporal
+Oriente	Matanzas	9550	Cierre temporal
+Centro Occidental	El Recreo	9425	Activa
+Occidente	El Vigia	9855	Activa
+Centro Occidental	Araure	9834	Activa
+Oriente	Anaco	9580	Activa
+Oriente	Corp. Punta De Mata 	9566	Cierre temporal
+Metro I	Av. España	9261	Activa
+Metro II	Guatire	9227	Activa
+Occidente	Punto Fijo	9817	Activa
+Metro I	Principal - Sambil La Candelaria	9217	Activa
+Oriente	Paseo Orinoco	9612	Activa
+Centro Occidental	Girardot	9396	Activa
+Centro Occidental	Girardot	9396	Activa
+Oriente	4 De Mayo	9660	Cierre temporal
+Oriente	Unare - Pto. Ordaz	9611	Cierre temporal
+Oriente	Unare - Pto. Ordaz	9611	Cierre temporal
+Oriente	Paseo Orinoco	9612	Activa
+Centro Occidental	San Fernando De Apure	9360	Activa
+Centro Occidental	Guanare	9832	Activa
+Oriente	El Tigre	9540	Activa
+Centro Occidental	Sambil Barquisimeto	9446	Activa
+Oriente	Cumana	9630	Activa
+Occidente	La Concordia	9837	Activa
+Oriente	Irapa	9640	Cierre temporal
+Oriente	Puerto La Cruz	9610	Activa
+Oriente	Cumana	9630	Activa
+Centro Occidental	Barinas  	9831	Activa
+Oriente	Upata	9654	Cierre temporal
+Oriente	Upata	9654	Cierre temporal
+Occidente	Cabimas	9815	Activa
+Centro Occidental	Cagua	9340	Activa
+Centro Occidental	Cagua	9340	Activa
+Occidente	Sambil San Cristobal	9947	Cierre definitivo
+Occidente	Tovar	9869	Activa
+Oriente	C.C. Sambil Margarita	9555	Activa
+Oriente	C. C. Monagas Plaza	9658	Cierre temporal
+Oriente	4 De Mayo	9660	Cierre temporal
+Occidente	Coloncito	9874	Activa
+Centro Occidental	Av. Aragua - Maracay	9393	Activa
+Oriente	Av. Bermudez Cumana	9665	Cierre temporal
+Occidente	Bella Vista	9818	Activa
+Oriente	4 De Mayo	9660	Cierre temporal
+Centro Occidental	Av. Lara Barquisimeto	9853	Activa
+Metro II	Altamira	9221	Cierre definitivo
+Oriente	Boulevard Sucre	9678	Cierre temporal
+Oriente	Boulevard Sucre	9678	Cierre temporal
+Occidente	Valera Centro	9801	Cierre temporal
+Occidente	Valera Centro	9801	Cierre temporal
+Occidente	Zona Industrial II - Maracaibo	9805	Activa
+Occidente	Plaza Republica	9813	Activa
+Occidente	5 De Julio	9811	Cierre temporal
+Occidente	5 De Julio	9811	Cierre temporal
+Oriente	Puerto Ordaz Oficina 	9510	Activa
+Occidente	Plaza Republica	9813	Activa
+Oriente	Terranova	9536	Activa
+Oriente	Anaco	9580	Activa
+Occidente	La Chinita	9854	Activa
+Metro I	Catia La Mar	9226	Activa
+Oriente	Maturin II	9615	Activa
+Metro I	Charallave	9250	Activa
+Occidente	Ciudad Ojeda	9816	Activa
+Centro Occidental	Calabozo	9392	Activa
+Occidente	Ciudad Ojeda	9816	Activa
+Centro Occidental	Turmero	9391	Activa
+Centro Occidental	Las Delicias 	9312	Activa
+Occidente	Bella Vista	9818	Activa
+Occidente	Bella Vista	9818	Activa
+Oriente	Puerto Ordaz Oficina 	9510	Activa
+Occidente	La Limpia	9884	Activa
+Occidente	Zona Industrial II - Maracaibo	9805	Activa
+Oriente	Carupano	9570	Activa
+Metro I	C. C. Uslar	9907	Activa
+Metro II	Plaza Francia	9394	Activa
+Metro I	La Cascada	9276	Activa
+Centro Occidental	Barquisimeto	9833	Activa
+Centro Occidental	Quibor	9868	Activa
+Metro II	La Trinidad	9228	Activa
+Occidente	Plaza Republica	9813	Activa
+Metro I	Multiplazas El Paraiso	9264	Activa
+Centro Occidental	Valle De La Pascua	9398	Activa
+Centro Occidental	Av. Lara Barquisimeto	9853	Activa
+Occidente	Villa Del Rosario	9827	Activa
+Occidente	Coro	9826	Activa
+Metro II	Guarenas	9291	Activa
+Occidente	Santa Bárbara Del Zulia	9814	Activa
+Metro I	La Casona	9246	Activa
+Occidente	Punto Fijo	9817	Activa
+Metro II	La Urbina	9284	Cierre temporal
+Centro Occidental	Terepaima cabudare	9444	Activa
+Oriente	Las Garzas	9655	Activa
+Centro Occidental	Barinas Centro	9841	Cierre temporal
+Centro Occidental	Barinas Centro	9841	Cierre temporal
+Centro Occidental	Carora	9842	Cierre temporal
+Occidente	Bachaquero	9843	Cierre definitivo
+Occidente	Mene Grande	9844	Cierre temporal
+Metro II	Buenaventura	9908	Cierre temporal
+Occidente	Plaza Alonso De Ojeda 	9847	Cierre definitivo
+Occidente	Plaza Republica	9813	Activa
+Occidente	Plaza Republica	9813	Activa
+Occidente	Las Galerias	9849	Cierre definitivo
+Occidente	Las Galerias	9849	Cierre definitivo
+Occidente	Sambil Maracaibo	9878	Activa
+Centro Occidental	La Morita	9397	Activa
+Occidente	Machiques	9820	Cierre temporal
+Oriente	Puerto Ordaz Oficina 	9510	Activa
+Centro Occidental	Alianza Mall Guacara	9485	Activa
+Centro Occidental	Acarigua	9845	Activa
+Occidente	Sambil Paraguana	9499	Activa
+Occidente	Ejido	9864	Cierre definitivo
+Occidente	Ejido	9864	Cierre definitivo
+Centro Occidental	San Juan De Los Morros	9370	Activa
+Metro II	Plaza Las Americas	9289	Activa
+Centro Occidental	Las Tejerias	9311	Activa
+Metro II	C.C. Lider	9282	Activa
+Occidente	Av. Las Américas	9875	Cierre temporal
+Occidente	San Juan De Colon	9876	Cierre definitivo
+Occidente	Paramillo	9877	Cierre definitivo
+Occidente	Paramillo	9877	Cierre definitivo
+Metro II	Higuerote	9290	Activa
+Metro II	Concresa	9231	Activa
+Metro I	Quinta Crespo	9299	Activa
+Metro I	Quinta Crespo	9299	Activa
+Metro II	Centro Plaza	9294	Activa
+Occidente	C. C. Lago Mall	9830	Cierre temporal
+Metro II	C.C. Tolon las Mercedes	9270	Activa
+Centro Occidental	La Victoria	9330	Activa
+Metro I	Maiquetia	9906	Activa
+Metro I	Los Teques II	9345	Activa
+Occidente	Valera	9824	Activa
+Metro I	Propatria	9349	Cierre temporal
+Oriente	Maturin II	9615	Activa
+Metro II	Los Ruices	9238	Activa
+Centro Occidental	Maracay II	9388	Cierre temporal
+Occidente	La Concordia	9837	Activa
+Oriente	Caripito	9653	Cierre temporal
+Metro II	C.C. Milenium	9911	Activa
+Metro II	Santa Fe	9915	Cierre temporal
+Metro II	Santa Fe	9915	Cierre temporal
+Metro I	Principal - Sambil La Candelaria	9217	Activa
+Metro II	Universidad Simon Bolivar	9928	Cierre temporal
+Centro Occidental	CIMA Barinas	9448	Activa
+Metro II	C. C. Manzanares	9932	Cierre temporal
+Occidente	San Cristobal II	9895	Cierre definitivo
+Oriente	Punta De Mata - Maturin	9647	Activa
+Centro Occidental	San Felipe	9835	Activa
+Oriente	Las Garzas	9655	Activa
+Oriente	Maturin La Cascada	9503	Activa
+Oriente	San Felix	9650	Activa
+Oriente	San Simon - Maturin	9675	Activa
+Oriente	Puerto Ordaz Oficina 	9510	Activa
+Oriente	Barcelona	9560	Activa

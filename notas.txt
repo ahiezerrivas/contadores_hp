@@ -1,0 +1,2 @@
+ver el comportamiento semanal y arrojar alerta
+y cuando esten en 0

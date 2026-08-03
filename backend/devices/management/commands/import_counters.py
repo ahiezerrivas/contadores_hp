@@ -45,7 +45,6 @@ HEADER_TO_FIELD = {
     "region": "region",
     "nombre oficina": "office_name",
     "piso": "floor",
-    "nombre de host sede": "host_name",
     "asignada o ubicacion": "location",
     "displayname": "display_name",
     "display name": "display_name",
@@ -53,7 +52,9 @@ HEADER_TO_FIELD = {
     "ipv4 address": "ip_address",
     "serialnumber": "serial_number",
     "serial number": "serial_number",
+    "serial": "serial_number",
     "contador del mes anterior": "previous_month_counter",
+    "contador mes anterior": "previous_month_counter",
     "contador semana 1": "week1_counter",
     "contador final semana 1": "week1_final",
     "contador semana 2": "week2_counter",
@@ -249,16 +250,18 @@ class Command(BaseCommand):
 
             data["impresora"] = impresora
 
-            lookup = None
             if impresora:
-                lookup = {"impresora": impresora, "period": data.get("period", "")}
-
-            if lookup:
-                obj, was_created = MonthlyCounterEntry.objects.update_or_create(
-                    **lookup, defaults=data
-                )
-                created += int(was_created)
-                updated += int(not was_created)
+                existing = MonthlyCounterEntry.objects.filter(
+                    impresora=impresora, period=data.get("period", "")
+                ).first()
+                if existing:
+                    for attr, value in data.items():
+                        setattr(existing, attr, value)
+                    existing.save()
+                    updated += 1
+                else:
+                    MonthlyCounterEntry.objects.create(**data)
+                    created += 1
             else:
                 MonthlyCounterEntry.objects.create(**data)
                 created += 1

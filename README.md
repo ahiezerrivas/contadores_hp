@@ -99,18 +99,7 @@ python backend\manage.py run_export --force
 
 ---
 
-### Opción B: Exportar datos de Django a JSON (recomendado si no tienes pg_dump)
 
-Este comando no requiere instalar nada adicional. Crea un respaldo portable de los datos manejados por Django:
-
-```powershell
-.\venv\Scripts\activate
-$fecha = Get-Date -Format "yyyy-MM-dd"; python backend\manage.py dumpdata --indent 2 > db_backup_$fecha.json
-```
-
-> **Nota:** `dumpdata` usa la base de datos configurada en `backend/.env`. Es ideal para respaldar/restaurar datos en cualquier entorno.
-
----
 
 ### Opción C: Backup de PostgreSQL a `.sql` con `pg_dump`
 

@@ -142,6 +142,11 @@ Si la base de datos no existe, créala antes:
 ```powershell
 & "C:\Program Files\PostgreSQL\18\bin\createdb.exe" -h localhost -U postgres hp_dispositivos
 ```
+```powershell
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -c "CREATE ROLE hp_app WITH LOGIN PASSWORD 'hp_app_pass';"
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE hp_dispositivos TO hp_app;"
+```
+
 
 #### Restaurar desde un archivo `.json` (Django)
 

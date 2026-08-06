@@ -106,7 +106,9 @@ class Impresora(models.Model):
     name = models.CharField("Nombre", max_length=255, blank=True, default="")
     model_name = models.CharField("Modelo", max_length=255, blank=True, default="")
     ip_address = models.CharField("IP", max_length=45, blank=True, default="")
-    serial_number = models.CharField("Serial", max_length=100, blank=True, default="")
+    serial_number = models.CharField(
+        "Serial", max_length=100, unique=True, null=True, blank=True, default=None
+    )
     status = models.CharField("Status", max_length=100, blank=True, default="")
 
     class Meta:

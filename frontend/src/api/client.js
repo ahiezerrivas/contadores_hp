@@ -41,4 +41,28 @@ export const updateImpresoraStatus = (impresoraId, status) =>
 export const pingDevice = (ipAddress) =>
   apiClient.get("/devices/ping/", { params: { ip_address: ipAddress } }).then((r) => r.data);
 
+export const getOficinas = (params = {}) =>
+  apiClient.get("/oficinas/", { params }).then((r) => r.data);
+
+export const createOficina = (data) =>
+  apiClient.post("/oficinas/", data).then((r) => r.data);
+
+export const updateOficina = (id, data) =>
+  apiClient.patch(`/oficinas/${id}/`, data).then((r) => r.data);
+
+export const deleteOficina = (id) =>
+  apiClient.delete(`/oficinas/${id}/`).then((r) => r.data);
+
+export const getImpresoras = (params = {}) =>
+  apiClient.get("/impresoras/", { params }).then((r) => r.data);
+
+export const createImpresora = (data) =>
+  apiClient.post("/impresoras/", data).then((r) => r.data);
+
+export const updateImpresora = (id, data) =>
+  apiClient.patch(`/impresoras/${id}/`, data).then((r) => r.data);
+
+export const deleteImpresora = (id) =>
+  apiClient.delete(`/impresoras/${id}/`).then((r) => r.data);
+
 export default apiClient;

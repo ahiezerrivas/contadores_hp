@@ -1,9 +1,11 @@
 import { useState } from "react";
 import Counters from './pages/Counters.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import Catalogs from './pages/Catalogs.jsx'
 
 const TABS = [
   { id: "counters", label: "Contadores mensuales", component: Counters },
+  { id: "catalogs", label: "Catalogos", component: Catalogs },
   { id: "dashboard", label: "Consulta en HP Web Jetadmin", component: Dashboard },
 ];
 

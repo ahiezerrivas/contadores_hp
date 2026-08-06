@@ -19,6 +19,8 @@ from .serializers import (
     ExportRunDetailSerializer,
     ExportRunSerializer,
     MonthlyCounterEntrySerializer,
+    OficinaSerializer,
+    ImpresoraSerializer,
 )
 from .utils import period_sort_key
 
@@ -315,6 +317,7 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
         )
         printer_statuses = sorted(
             self._filtered_queryset(request, exclude="printer_status")
+            .exclude(impresora__status__isnull=True)
             .exclude(impresora__status="")
             .order_by()
             .values_list("impresora__status", flat=True)
@@ -435,3 +438,38 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
             "count": len(results),
             "results": results,
         })
+
+
+class OficinaViewSet(viewsets.ModelViewSet):
+    queryset = Oficina.objects.all()
+    serializer_class = OficinaSerializer
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["name", "status", "region", "code"]
+    search_fields = ["name", "region", "code"]
+
+    def get_queryset(self):
+        q = self.request.query_params.get("search", "")
+        qs = Oficina.objects.all()
+        if q:
+            qs = qs.filter(Q(name__icontains=q) | Q(region__icontains=q) | Q(code__icontains=q))
+        return qs
+
+
+class ImpresoraViewSet(viewsets.ModelViewSet):
+    queryset = Impresora.objects.all()
+    serializer_class = ImpresoraSerializer
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["name", "model_name", "ip_address", "serial_number", "status"]
+    search_fields = ["name", "model_name", "ip_address", "serial_number"]
+
+    def get_queryset(self):
+        q = self.request.query_params.get("search", "")
+        qs = Impresora.objects.all()
+        if q:
+            qs = qs.filter(
+                Q(name__icontains=q)
+                | Q(model_name__icontains=q)
+                | Q(ip_address__icontains=q)
+                | Q(serial_number__icontains=q)
+            )
+        return qs

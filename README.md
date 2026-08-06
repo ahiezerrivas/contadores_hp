@@ -191,3 +191,9 @@ python backend\manage.py import_counters "Contador de Pagina Torre Junio del 01 
   ```
 
 - Para programar la extracción automática se puede usar `backend/run_export.bat` con el Programador de tareas de Windows.
+
+
+npx vite --host
+
+
+

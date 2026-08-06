@@ -1,3 +1,3 @@
-no esta subiendo la 5 semana del excel
-hacer dos archivos de import_counters uno para torre y el otro para oficina
+[hecho] no esta subiendo la 5 semana del excel -> era data vieja en BD, se re-importo el archivo Oficina
+[hecho] hacer dos archivos de import_counters uno para torre y el otro para oficina -> import_counters_torre.py / import_counters_oficina.py
 0

@@ -39,6 +39,12 @@ class ExportRunDetailSerializer(ExportRunSerializer):
         fields = ExportRunSerializer.Meta.fields + ["snapshots"]
 
 
+class OficinaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Oficina
+        fields = ["id", "name", "status", "region", "code"]
+
+
 class ImpresoraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Impresora

@@ -282,7 +282,7 @@ function Counters() {
             <table className="w-full text-sm">
               <thead className="bg-slate-50 text-slate-600 text-left">
                 <tr>
-                  <SortHeader field="display_name">Modelo</SortHeader>
+                  <SortHeader field="display_name">Nombre</SortHeader>
                   <SortHeader field="ip_address">IPv4Address</SortHeader>
                   <SortHeader field="serial_number">Serial</SortHeader>
                   <SortHeader field="region">Region</SortHeader>

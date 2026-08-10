@@ -127,6 +127,10 @@ class MonthlyCounterEntry(models.Model):
     """
 
     region = models.CharField(max_length=100, blank=True, default="")
+    category = models.CharField(
+        "Categoria", max_length=20, blank=True, default="",
+        help_text="Oficina o Torre, segun el reporte de origen.",
+    )
     office = models.ForeignKey(
         Oficina,
         on_delete=models.SET_NULL,
@@ -137,6 +141,12 @@ class MonthlyCounterEntry(models.Model):
     )
     floor = models.CharField("Piso", max_length=100, blank=True, default="")
     location = models.CharField("Asignada o Ubicacion", max_length=255, blank=True, default="")
+    ip_address = models.CharField(
+        "IP del periodo", max_length=45, blank=True, default=""
+    )
+    printer_status = models.CharField(
+        "Status Impresora del periodo", max_length=100, blank=True, default=""
+    )
     impresora = models.ForeignKey(
         Impresora,
         on_delete=models.SET_NULL,
@@ -180,6 +190,7 @@ class MonthlyCounterEntry(models.Model):
         indexes = [
             models.Index(fields=["impresora", "period"]),
             models.Index(fields=["region", "period"]),
+            models.Index(fields=["ip_address", "period"]),
         ]
 
     def __str__(self):

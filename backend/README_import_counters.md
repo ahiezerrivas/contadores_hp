@@ -35,8 +35,8 @@ no importa el orden en que vengan en el archivo.
 Desde la raiz del proyecto (`hp/`), con el venv activo:
 
 ```powershell
-python backend\manage.py import_counters "Contador de Pagina Torre Julio del 01 al 31.xlsx"
-python backend\manage.py import_counters "Contador de Pagina Oficina Julio del 01 al 31.xlsx"
+python backend\manage.py import_counters_oficina "Contador de Pagina Torre Julio del 01 al 31.xlsx"
+python backend\manage.py import_counters_torre "Contador de Pagina Oficina Julio del 01 al 31.xlsx"
 ```
 
 Puedes pasar una ruta relativa (si el archivo esta en `hp/`) o una ruta absoluta

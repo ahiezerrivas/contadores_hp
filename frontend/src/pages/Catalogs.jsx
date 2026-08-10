@@ -54,7 +54,7 @@ function FieldsForm({ fields, form, onChange }) {
   );
 }
 
-function CatalogPanel({ title, fields, api }) {
+function CatalogPanel({ title, fields, api, isAdmin }) {
   const [data, setData] = useState({ count: 0, next: null, previous: null, results: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -153,13 +153,15 @@ function CatalogPanel({ title, fields, api }) {
                       </td>
                     ))}
                     <td className="px-4 py-2 text-right">
-                      <button
-                        type="button"
-                        onClick={() => startEdit(item)}
-                        className="text-slate-600 hover:text-slate-900"
-                      >
-                        Editar
-                      </button>
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => startEdit(item)}
+                          className="text-slate-600 hover:text-slate-900"
+                        >
+                          Editar
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -228,7 +230,7 @@ function CatalogPanel({ title, fields, api }) {
   );
 }
 
-function Catalogs() {
+function Catalogs({ isAdmin = false }) {
   const [tab, setTab] = useState("oficinas");
 
   const tabs = [
@@ -275,6 +277,7 @@ function Catalogs() {
         title={active.label}
         fields={active.fields}
         api={active.api}
+        isAdmin={isAdmin}
       />
     </div>
   );

@@ -88,6 +88,7 @@ class MonthlyCounterEntryAdmin(admin.ModelAdmin):
         "impresora_name",
         "impresora_ip",
         "region",
+        "category",
         "office__name",
         "impresora",
         "period",
@@ -95,7 +96,7 @@ class MonthlyCounterEntryAdmin(admin.ModelAdmin):
         "zero_counter_devices",
         "impresora_status",
     )
-    list_filter = ("region", "period", "impresora__status", OficinaAsignadaFilter)
+    list_filter = ("region", "category", "period", "impresora__status", OficinaAsignadaFilter)
     search_fields = ("impresora__ip_address", "impresora__name", "impresora__serial_number", "office__name")
     ordering = ("-period", "region", "office__name")
     fieldsets = (
@@ -104,6 +105,7 @@ class MonthlyCounterEntryAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "region",
+                    "category",
                     "office",
                     "floor",
                     "location",
@@ -136,13 +138,13 @@ class MonthlyCounterEntryAdmin(admin.ModelAdmin):
     def impresora_name(self, obj):
         return obj.impresora.name if obj.impresora else "-"
 
-    @admin.display(description="IP", ordering="impresora__ip_address")
+    @admin.display(description="IP (del periodo)", ordering="ip_address")
     def impresora_ip(self, obj):
-        return obj.impresora.ip_address if obj.impresora else "-"
+        return obj.ip_address or "-"
 
-    @admin.display(description="Status Impresora", ordering="impresora__status")
+    @admin.display(description="Status Impresora (del periodo)", ordering="printer_status")
     def impresora_status(self, obj):
-        return obj.impresora.status if obj.impresora else "-"
+        return obj.printer_status or "-"
 
 
 @admin.register(Impresora)

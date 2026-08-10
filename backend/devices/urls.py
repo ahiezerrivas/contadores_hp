@@ -1,3 +1,4 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from .views import (
@@ -6,6 +7,8 @@ from .views import (
     ImpresoraViewSet,
     MonthlyCounterEntryViewSet,
     OficinaViewSet,
+    LoginView,
+    me,
 )
 
 router = DefaultRouter()
@@ -15,4 +18,7 @@ router.register("monthly-counters", MonthlyCounterEntryViewSet, basename="monthl
 router.register("oficinas", OficinaViewSet, basename="oficina")
 router.register("impresoras", ImpresoraViewSet, basename="impresora")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path("auth/login/", LoginView.as_view(), name="login"),
+    path("auth/me/", me, name="me"),
+] + router.urls

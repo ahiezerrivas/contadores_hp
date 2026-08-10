@@ -1,8 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  exportMonthlyCounters,
   getMissingSnapshots,
   getMonthlyCounterFilters,
   getMonthlyCounters,
+  getMonthlyCountersByPeriod,
   pingDevice,
   updateImpresoraStatus,
   updateMonthlyCounter,
@@ -40,10 +52,11 @@ function formatNumber(value) {
   return value === null || value === undefined ? "-" : value.toLocaleString();
 }
 
-function Counters() {
-  const [filters, setFilters] = useState({ regions: [], periods: [], printer_statuses: [], offices: [] });
+function Counters({ isAdmin = false }) {
+  const [filters, setFilters] = useState({ regions: [], categories: [], periods: [], printer_statuses: [], offices: [] });
 
   const [region, setRegion] = useState(ALL);
+  const [category, setCategory] = useState(ALL);
   const [period, setPeriod] = useState(ALL);
   const [printerStatus, setPrinterStatus] = useState(ALL);
   const [office, setOffice] = useState(ALL);
@@ -66,6 +79,10 @@ function Counters() {
   const [pingStatus, setPingStatus] = useState({});
   const [savingStatusId, setSavingStatusId] = useState(null);
   const [allStatuses, setAllStatuses] = useState([]);
+  const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
+  const [exporting, setExporting] = useState(false);
+  const [periodData, setPeriodData] = useState([]);
+  const [chartLoading, setChartLoading] = useState(false);
 
   useEffect(() => {
     getMonthlyCounterFilters({})
@@ -81,6 +98,29 @@ function Counters() {
 
   const handleFieldChange = (name, value) => {
     setForm((f) => ({ ...f, [name]: value }));
+  };
+
+  const handleExport = () => {
+    setExporting(true);
+    const params = {};
+    if (region !== ALL) params.region = region;
+    if (category !== ALL) params.category = category;
+    if (period !== ALL) params.period = period;
+    if (printerStatus !== ALL) params.printer_status = printerStatus;
+    if (office !== ALL) params.office = office;
+    if (search.trim()) params.search = search.trim();
+
+    exportMonthlyCounters(params)
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "contadores.xlsx";
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(() => alert("No se pudo generar el archivo Excel."))
+      .finally(() => setExporting(false));
   };
 
   const handleSave = () => {
@@ -108,6 +148,7 @@ function Counters() {
   useEffect(() => {
     const params = {};
     if (region !== ALL) params.region = region;
+    if (category !== ALL) params.category = category;
     if (period !== ALL) params.period = period;
     if (printerStatus !== ALL) params.printer_status = printerStatus;
     if (office !== ALL) params.office = office;
@@ -115,11 +156,12 @@ function Counters() {
     getMonthlyCounterFilters(params)
       .then(setFilters)
       .catch(() => {});
-  }, [region, period, printerStatus, office]);
+  }, [region, category, period, printerStatus, office]);
 
   const fetchMissing = () => {
     const params = { printer_status: "Instalado" };
     if (region !== ALL) params.region = region;
+    if (category !== ALL) params.category = category;
     if (period !== ALL) params.period = period;
     if (office !== ALL) params.office = office;
 
@@ -128,7 +170,7 @@ function Counters() {
       .catch(() => {});
   };
 
-  useEffect(fetchMissing, [region, period, office]);
+  useEffect(fetchMissing, [region, category, period, office]);
 
   const handleStatusChange = (impresoraId, newStatus) => {
     setSavingStatusId(impresoraId);
@@ -156,6 +198,7 @@ function Counters() {
     setError(null);
     const params = { page };
     if (region !== ALL) params.region = region;
+    if (category !== ALL) params.category = category;
     if (period !== ALL) params.period = period;
     if (printerStatus !== ALL) params.printer_status = printerStatus;
     if (office !== ALL) params.office = office;
@@ -166,7 +209,7 @@ function Counters() {
       .then(setData)
       .catch(() => setError("No se pudieron cargar los contadores."))
       .finally(() => setLoading(false));
-  }, [region, period, printerStatus, office, search, page, ordering]);
+  }, [region, category, period, printerStatus, office, search, page, ordering]);
 
   const resetToFirstPage = (setter) => (value) => {
     setPage(1);
@@ -174,6 +217,27 @@ function Counters() {
   };
 
   const totalPages = useMemo(() => Math.max(1, Math.ceil(data.count / 50)), [data.count]);
+
+  const totalMonthly = useMemo(
+    () => data.results.reduce((sum, e) => sum + (Number(e.monthly_counter) || 0), 0),
+    [data.results]
+  );
+
+  useEffect(() => {
+    setChartLoading(true);
+    const params = {};
+    if (region !== ALL) params.region = region;
+    if (category !== ALL) params.category = category;
+    if (period !== ALL) params.period = period;
+    if (printerStatus !== ALL) params.printer_status = printerStatus;
+    if (office !== ALL) params.office = office;
+    if (search.trim()) params.search = search.trim();
+
+    getMonthlyCountersByPeriod(params)
+      .then((data) => setPeriodData(data))
+      .catch(() => setPeriodData([]))
+      .finally(() => setChartLoading(false));
+  }, [region, category, period, printerStatus, office, search]);
 
   const SortHeader = ({ field, children, align = "left" }) => {
     const isAsc = ordering === field;
@@ -187,7 +251,7 @@ function Counters() {
           if (isAsc) setOrdering(`-${field}`);
           else setOrdering(field);
         }}
-        className={`px-4 py-2 cursor-pointer select-none hover:bg-slate-100 ${alignClass}`}
+        className={`px-2 py-2 truncate cursor-pointer select-none hover:bg-slate-100 ${alignClass}`}
       >
         <span className="inline-flex items-center gap-1">
           {children} {arrow}
@@ -202,13 +266,11 @@ function Counters() {
         <div className="bg-amber-50 border border-amber-300 rounded-lg shadow-sm p-4 flex items-center justify-between">
           <div>
             <p className="text-amber-800 font-medium">
-              {missing.count} impresora{missing.count === 1 ? "" : "s"} sin lectura en los ultimos{" "}
-              {missing.days} dias
+              {missing.count} impresora{missing.count === 1 ? "" : "s"} activas no registradas en HP Web
+              Jetadmin
             </p>
             <p className="text-amber-700 text-sm">
-              No se recibio un DeviceSnapshot valido para {missing.count === 1 ? "esta" : "estas"}{" "}
-              impresora{missing.count === 1 ? "" : "s"}. Revisa conectividad o si el equipo fue
-              retirado.
+              Equipos con estatus activo que no aparecen en los reportes de HP Web Jetadmin.
             </p>
           </div>
           <button
@@ -228,6 +290,12 @@ function Counters() {
             value={region}
             onChange={resetToFirstPage(setRegion)}
             options={filters.regions}
+          />
+          <FilterSelect
+            label="Categoria"
+            value={category}
+            onChange={resetToFirstPage(setCategory)}
+            options={filters.categories}
           />
           <FilterSelect
             label="Fecha"
@@ -272,20 +340,53 @@ function Counters() {
               detalle completo.
             </p>
           </div>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={handleExport}
+              disabled={exporting}
+              className="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:bg-emerald-400"
+            >
+              {exporting ? "Exportando..." : "Exportar Excel"}
+            </button>
+            <div className="text-right">
+              <p className="text-xs text-slate-500 uppercase tracking-wide">Total Contador Mensual</p>
+              <p className="text-lg font-semibold text-slate-800">{formatNumber(totalMonthly)}</p>
+            </div>
+          </div>
         </div>
 
+        {!loading && !chartLoading && periodData.length > 0 && (
+          <div className="p-4 border-b">
+            <h3 className="text-sm font-medium text-slate-700 mb-2">
+              Contadores por mes
+            </h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={periodData} margin={{ top: 5, right: 5, left: -20, bottom: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="period" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip formatter={(v) => v.toLocaleString()} />
+                  <Bar dataKey="total" fill="#0ea5e9" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
         {error && <p className="p-4 text-red-600">{error}</p>}
         {loading ? (
           <p className="p-4 text-slate-500">Cargando...</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm table-fixed">
               <thead className="bg-slate-50 text-slate-600 text-left">
                 <tr>
                   <SortHeader field="display_name">Nombre</SortHeader>
                   <SortHeader field="ip_address">IPv4Address</SortHeader>
                   <SortHeader field="serial_number">Serial</SortHeader>
                   <SortHeader field="region">Region</SortHeader>
+                  <SortHeader field="category">Categoria</SortHeader>
                   <SortHeader field="office__name">Nombre Oficina</SortHeader>
                   <SortHeader field="office__status">Estatus Oficina</SortHeader>
                   <SortHeader field="period">Fecha</SortHeader>
@@ -299,22 +400,34 @@ function Counters() {
                     key={entry.id}
                     onClick={() => setSelected(entry)}
                     className="border-t hover:bg-slate-50 cursor-pointer"
+                    onMouseEnter={(e) =>
+                      setTooltip({
+                        visible: true,
+                        text: entry.observations?.trim() || "Sin observaciones",
+                        x: e.clientX,
+                        y: e.clientY,
+                      })
+                    }
+                    onMouseMove={(e) =>
+                      setTooltip((t) => ({ ...t, x: e.clientX, y: e.clientY }))
+                    }
+                    onMouseLeave={() => setTooltip((t) => ({ ...t, visible: false }))}
                   >
-                    <td className="px-4 py-2">{entry.impresora?.name || "-"}</td>
-                    <td className="px-4 py-2 font-mono">{entry.impresora?.ip_address || "-"}</td>
-                    <td className="px-4 py-2 font-mono">{entry.impresora?.serial_number || "-"}</td>
-                    <td className="px-4 py-2">{entry.region || "-"}</td>
-                    <td className="px-4 py-2">{entry.office_name || "-"}</td>
-                    <td className="px-4 py-2">{entry.office_status || "-"}</td>
-                    <td className="px-4 py-2">{entry.period || "-"}</td>
-                    <td className="px-4 py-2 text-right">{formatNumber(entry.monthly_counter)}</td>
-                   
-                    <td className="px-4 py-2">{entry.impresora?.status || "-"}</td>
+                    <td className="px-2 py-1.5 truncate">{entry.impresora?.name || "-"}</td>
+                    <td className="px-2 py-1.5 truncate font-mono">{entry.ip_address || "-"}</td>
+                    <td className="px-2 py-1.5 truncate font-mono">{entry.impresora?.serial_number || "-"}</td>
+                    <td className="px-2 py-1.5 truncate">{entry.region || "-"}</td>
+                    <td className="px-2 py-1.5 truncate">{entry.category || "-"}</td>
+                    <td className="px-2 py-1.5 truncate">{entry.office_name || "-"}</td>
+                    <td className="px-2 py-1.5 truncate">{entry.office_status || "-"}</td>
+                    <td className="px-2 py-1.5 truncate">{entry.period || "-"}</td>
+                    <td className="px-2 py-1.5 text-right truncate">{formatNumber(entry.monthly_counter)}</td>
+                    <td className="px-2 py-1.5 truncate">{entry.printer_status || "-"}</td>
                   </tr>
                 ))}
                 {data.results.length === 0 && (
                   <tr>
-                    <td colSpan={9} className="px-4 py-3 text-center text-slate-500">
+                    <td colSpan={10} className="px-4 py-3 text-center text-slate-500">
                       Sin resultados.
                     </td>
                   </tr>
@@ -360,6 +473,7 @@ function Counters() {
             editing={editing}
             saving={saving}
             saveError={saveError}
+            isAdmin={isAdmin}
             onChange={handleFieldChange}
             onEdit={() => setEditing(true)}
             onCancel={handleCancelEdit}
@@ -397,7 +511,7 @@ function Counters() {
                     <td className="px-3 py-1.5">
                       <select
                         value={m.printer_status || ""}
-                        disabled={savingStatusId === m.impresora_id}
+                        disabled={!isAdmin || savingStatusId === m.impresora_id}
                         onChange={(e) => handleStatusChange(m.impresora_id, e.target.value)}
                         className="border rounded-md px-2 py-1 text-xs bg-white disabled:opacity-50"
                       >
@@ -451,6 +565,21 @@ function Counters() {
           </table>
         </div>
       </Modal>
+
+      {tooltip.visible &&
+        createPortal(
+          <div
+            className="fixed z-50 max-w-xs rounded-md bg-slate-800 px-3 py-2 text-xs text-white shadow-lg"
+            style={{
+              left: tooltip.x,
+              top: tooltip.y,
+              transform: "translate(-50%, -110%)",
+            }}
+          >
+            {tooltip.text}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
@@ -493,107 +622,118 @@ function Field({ label, name, value, editing, onChange, type = "text" }) {
     <div>
       <p className="text-xs text-slate-400">{label}</p>
       <p className="text-sm text-slate-800">
-        {value === "" || value === null || value === undefined ? "-" : value}
+        {value === "" || value === null || value === undefined
+          ? "-"
+          : type === "number"
+          ? formatNumber(value)
+          : value}
       </p>
     </div>
   );
 }
 
-const COUNTER_ROWS = [
-  { label: "Contador del Mes Anterior", name: "previous_month_counter" },
-  { label: "Contador Total Semana 1", name: "week1_counter" },
-  { label: "Contador Final Semana 1", name: "week1_final" },
-  { label: "Contador Total Semana 2", name: "week2_counter" },
-  { label: "Contador Final Semana 2", name: "week2_final" },
-  { label: "Contador Total Semana 3", name: "week3_counter" },
-  { label: "Contador Final Semana 3", name: "week3_final" },
-  { label: "Contador Total Semana 4", name: "week4_counter" },
-  { label: "Contador Final Semana 4", name: "week4_final" },
-  { label: "Contador Total Semana 5", name: "week5_counter" },
-  { label: "Contador Final Semana 5", name: "week5_final" },
-  { label: "Contador Mensual", name: "monthly_counter" },
-  
-];
+function CounterTable({ form, editing, onChange }) {
+  const weeks = [
+    { label: "Semana 1", total: "week1_counter", final: "week1_final" },
+    { label: "Semana 2", total: "week2_counter", final: "week2_final" },
+    { label: "Semana 3", total: "week3_counter", final: "week3_final" },
+    { label: "Semana 4", total: "week4_counter", final: "week4_final" },
+    { label: "Semana 5", total: "week5_counter", final: "week5_final" },
+  ];
 
-function CounterTable({ entry, form, editing, onChange }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-max text-sm border rounded-md overflow-hidden">
-        <thead className="bg-slate-50 text-slate-600 text-center">
-          <tr>
-            {COUNTER_ROWS.map((row) => (
-              <th key={row.name} className="px-3 py-2 font-medium whitespace-nowrap">
-                {row.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {COUNTER_ROWS.map((row) => (
-              <td
-                key={row.name}
-                className="px-3 py-1.5 text-slate-800 text-center whitespace-nowrap border-t"
-              >
-                {editing ? (
-                  <input
-                    type="number"
-                    value={form[row.name] ?? ""}
-                    onChange={(e) =>
-                      onChange(row.name, e.target.value === "" ? null : Number(e.target.value))
-                    }
-                    className="w-full border rounded-md px-2 py-1 text-sm"
-                  />
-                ) : (
-                  <span className="text-slate-800">{formatNumber(entry[row.name])}</span>
-                )}
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+    <div className="space-y-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <Field
+          label="Contador del Mes Anterior"
+          name="previous_month_counter"
+          value={form.previous_month_counter}
+          editing={editing}
+          onChange={onChange}
+          type="number"
+        />
+        <Field
+          label="Contador Mensual"
+          name="monthly_counter"
+          value={form.monthly_counter}
+          editing={editing}
+          onChange={onChange}
+          type="number"
+        />
+      </div>
+
+      {weeks.map((w) => (
+        <details key={w.label} className="border rounded-md">
+          <summary className="px-3 py-2 text-sm font-medium text-slate-700 cursor-pointer hover:bg-slate-50">
+            {w.label}
+          </summary>
+          <div className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field
+              label="Contador Total"
+              name={w.total}
+              value={form[w.total]}
+              editing={editing}
+              onChange={onChange}
+              type="number"
+            />
+            <Field
+              label="Contador Final"
+              name={w.final}
+              value={form[w.final]}
+              editing={editing}
+              onChange={onChange}
+              type="number"
+            />
+          </div>
+        </details>
+      ))}
     </div>
   );
 }
 
-function CounterDetail({ entry, form, editing, saving, saveError, onChange, onEdit, onCancel, onSave }) {
+function CounterDetail({ entry, form, editing, saving, saveError, isAdmin, onChange, onEdit, onCancel, onSave }) {
   return (
     <div>
-      <div className="flex items-center justify-end gap-2 mb-3">
-        {editing ? (
-          <>
+      {isAdmin ? (
+        <div className="flex items-center justify-end gap-2 mb-3">
+          {editing ? (
+            <>
+              <button
+                type="button"
+                onClick={onCancel}
+                disabled={saving}
+                className="px-3 py-1.5 rounded-md text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={onSave}
+                disabled={saving}
+                className="px-3 py-1.5 rounded-md text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+              >
+                {saving ? "Guardando..." : "Guardar"}
+              </button>
+            </>
+          ) : (
             <button
               type="button"
-              onClick={onCancel}
-              disabled={saving}
-              className="px-3 py-1.5 rounded-md text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50"
+              onClick={onEdit}
+              className="px-3 py-1.5 rounded-md text-sm bg-slate-100 text-slate-700 hover:bg-slate-200"
             >
-              Cancelar
+              Editar
             </button>
-            <button
-              type="button"
-              onClick={onSave}
-              disabled={saving}
-              className="px-3 py-1.5 rounded-md text-sm bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-              {saving ? "Guardando..." : "Guardar"}
-            </button>
-          </>
-        ) : (
-          <button
-            type="button"
-            onClick={onEdit}
-            className="px-3 py-1.5 rounded-md text-sm bg-slate-100 text-slate-700 hover:bg-slate-200"
-          >
-            Editar
-          </button>
-        )}
-      </div>
+          )}
+        </div>
+      ) : (
+        <p className="text-xs text-slate-500 text-right mb-3">Solo lectura</p>
+      )}
 
       {saveError && <p className="text-sm text-red-600 mb-3">{saveError}</p>}
 
       <DetailSection title="Ubicacion">
         <Field label="Region" name="region" value={form.region} editing={editing} onChange={onChange} />
+        <Field label="Categoria" name="category" value={form.category} editing={editing} onChange={onChange} />
         <Field label="Nombre Oficina" name="office_name" value={form.office_name} editing={editing} onChange={onChange} />
         <Field label="Piso" name="floor" value={form.floor} editing={editing} onChange={onChange} />
         <Field label="Nombre de Host Sede" name="host_name" value={form.host_name} editing={editing} onChange={onChange} />
@@ -602,14 +742,14 @@ function CounterDetail({ entry, form, editing, saving, saveError, onChange, onEd
 
       <DetailSection title="Dispositivo">
         <Field label="DisplayName" value={form.impresora?.name} editing={false} onChange={() => {}} />
-        <Field label="IPv4Address" value={form.impresora?.ip_address} editing={false} onChange={() => {}} />
+        <Field label="IPv4Address (del periodo)" value={form.ip_address} editing={false} onChange={() => {}} />
         <Field label="SerialNumber" value={form.impresora?.serial_number} editing={false} onChange={() => {}} />
-        <Field label="Status Impresora" value={form.impresora?.status} editing={false} onChange={() => {}} />
+        <Field label="Status Impresora (del periodo)" value={form.printer_status} editing={false} onChange={() => {}} />
       </DetailSection>
 
       <div className="mb-4">
         <h4 className="text-xs uppercase tracking-wide text-slate-500 mb-2">Contadores</h4>
-        <CounterTable entry={entry} form={form} editing={editing} onChange={onChange} />
+        <CounterTable form={form} editing={editing} onChange={onChange} />
       </div>
 
       <DetailSection title="Periodo y notas">

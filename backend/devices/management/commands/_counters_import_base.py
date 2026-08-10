@@ -11,7 +11,6 @@ import re
 import unicodedata
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db.models import Q
 from openpyxl import load_workbook
 
 from devices.models import Impresora, MonthlyCounterEntry, Oficina
@@ -116,22 +115,25 @@ def format_period(value):
 class BaseImportCountersCommand(BaseCommand):
     """Comando base para importar un reporte mensual de contadores (Excel).
 
-    Las subclases pueden fijar `default_region` para no tener que pasar
-    el flag --region cada vez (ej. import_counters_torre fija "Torre").
+    Las subclases pueden fijar `default_category` para no tener que pasar
+    el flag --category cada vez (ej. import_counters_torre fija "Torre").
+    La columna Region del Excel (geografica: Occidente, Centro, etc.) se
+    respeta tal cual; category es un dato aparte (Oficina/Torre) que indica
+    el tipo de reporte de origen.
     """
 
     help = "Importa un reporte mensual de contadores (Excel) a MonthlyCounterEntry."
-    default_region = None
+    default_category = None
 
     def add_arguments(self, parser):
         parser.add_argument("path", help="Ruta al archivo .xlsx")
         parser.add_argument("--sheet", default=None, help="Nombre de la hoja (por defecto la activa).")
         parser.add_argument(
-            "--region",
+            "--category",
             default=None,
             help=(
-                "Forzar el valor de Region para todas las filas (ej. Torre, Oficina)."
-                + (f" Por defecto: {self.default_region}." if self.default_region else "")
+                "Forzar la categoria (Oficina, Torre) para todas las filas."
+                + (f" Por defecto: {self.default_category}." if self.default_category else "")
             ),
         )
         parser.add_argument(
@@ -176,7 +178,7 @@ class BaseImportCountersCommand(BaseCommand):
                 "Verifica que la primera fila tenga los nombres esperados."
             )
 
-        override_region = options.get("region") or self.default_region
+        override_category = options.get("category") or self.default_category
         override_period = options.get("period")
         dry_run = options.get("dry_run")
 
@@ -196,8 +198,8 @@ class BaseImportCountersCommand(BaseCommand):
                 else:
                     data[field] = ("" if value is None else str(value).strip())
 
-            if override_region:
-                data["region"] = override_region
+            if override_category:
+                data["category"] = override_category
             if override_period:
                 data["period"] = override_period
 
@@ -220,11 +222,19 @@ class BaseImportCountersCommand(BaseCommand):
 
             data["source_file"] = path
 
-            impresora_data = {
-                IMPRESORA_FIELD_MAP[field]: data.pop(field)
-                for field in list(IMPRESORA_FIELD_MAP)
-                if field in data
-            }
+            # Extraer datos para el catálogo maestro Impresora, pero dejar
+            # ip_address y printer_status en data para guardarlos como
+            # snapshot del mes (Impresora.ip_address/status son mutables y
+            # se sobrescriben en cada import; el snapshot preserva el valor
+            # que efectivamente reportaba el Excel de ese periodo).
+            impresora_data = {}
+            for field in list(IMPRESORA_FIELD_MAP):
+                if field not in data:
+                    continue
+                value = data.pop(field)
+                impresora_data[IMPRESORA_FIELD_MAP[field]] = value
+                if field in ("ip_address", "printer_status"):
+                    data[field] = value
             if not impresora_data.get("serial_number"):
                 impresora_data["serial_number"] = None
 
@@ -232,19 +242,26 @@ class BaseImportCountersCommand(BaseCommand):
                 created += 1
                 continue
 
+            # Buscar primero por serial (identificador principal), luego por IP.
+            # No sobreescribimos el serial de una impresora encontrada por IP
+            # si ese serial ya pertenece a otro registro, para evitar duplicados.
             impresora = None
-            imp_q = None
             if serial_number:
-                imp_q = Q(serial_number=serial_number)
-            if ip_address:
-                imp_q = imp_q | Q(ip_address=ip_address) if imp_q else Q(ip_address=ip_address)
-            if imp_q:
-                impresora = Impresora.objects.filter(imp_q).first()
+                impresora = Impresora.objects.filter(serial_number=serial_number).first()
+
+            if not impresora and ip_address:
+                impresora = Impresora.objects.filter(ip_address=ip_address).first()
 
             if impresora:
                 for attr, value in impresora_data.items():
-                    if value:
-                        setattr(impresora, attr, value)
+                    if not value:
+                        continue
+                    if attr == "serial_number":
+                        if value == impresora.serial_number:
+                            continue
+                        if Impresora.objects.filter(serial_number=value).exclude(pk=impresora.pk).exists():
+                            continue
+                    setattr(impresora, attr, value)
                 impresora.save()
             elif any(impresora_data.values()):
                 impresora = Impresora.objects.create(**impresora_data)

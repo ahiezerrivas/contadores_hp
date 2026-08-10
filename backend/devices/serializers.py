@@ -1,6 +1,13 @@
 from rest_framework import serializers
+from users.models import User
 
 from .models import DeviceSnapshot, ExportRun, Impresora, MonthlyCounterEntry, Oficina
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "first_name", "last_name", "role"]
 
 
 class DeviceSnapshotSerializer(serializers.ModelSerializer):
@@ -61,11 +68,14 @@ class MonthlyCounterEntrySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "region",
+            "category",
             "office",
             "office_name",
             "office_status",
             "floor",
             "location",
+            "ip_address",
+            "printer_status",
             "impresora",
             "previous_month_counter",
             "week1_counter",

@@ -4,6 +4,19 @@ const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://127.0.0.1:8001/api",
 });
 
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Token ${token}`;
+  }
+  return config;
+});
+
+export const login = (credentials) =>
+  apiClient.post("/auth/login/", credentials).then((r) => r.data);
+
+export const me = () => apiClient.get("/auth/me/").then((r) => r.data);
+
 export const getLatestRun = () => apiClient.get("/runs/latest/").then((r) => r.data);
 
 export const getLatestDevices = (params = {}) =>
@@ -24,8 +37,16 @@ export const getWeeklyDevices = (date) =>
 export const getMonthlyCounters = (params = {}) =>
   apiClient.get("/monthly-counters/", { params }).then((r) => r.data);
 
+export const exportMonthlyCounters = (params = {}) =>
+  apiClient
+    .get("/monthly-counters/export/", { params, responseType: "blob" })
+    .then((r) => r.data);
+
 export const getMonthlyCounterFilters = (params = {}) =>
   apiClient.get("/monthly-counters/filters/", { params }).then((r) => r.data);
+
+export const getMonthlyCountersByPeriod = (params = {}) =>
+  apiClient.get("/monthly-counters/by-period/", { params }).then((r) => r.data);
 
 export const updateMonthlyCounter = (id, data) =>
   apiClient.patch(`/monthly-counters/${id}/`, data).then((r) => r.data);

@@ -16,11 +16,11 @@ Con columnas (en cualquier orden, se detectan por nombre de encabezado):
 
 Uso:
     python manage.py import_counters "Contador de Pagina Torre Julio del 01 al 31.xlsx"
-    python manage.py import_counters archivo.xlsx --region Torre --period jul-26
+    python manage.py import_counters archivo.xlsx --category Torre --period jul-26
     python manage.py import_counters archivo.xlsx --sheet "Hoja1" --dry-run
 
 Nota: si siempre importas el mismo tipo de archivo, usa los comandos
-import_counters_torre / import_counters_oficina, que fijan --region
+import_counters_torre / import_counters_oficina, que fijan --category
 automaticamente.
 """
 
@@ -28,4 +28,4 @@ from devices.management.commands._counters_import_base import BaseImportCounters
 
 
 class Command(BaseImportCountersCommand):
-    default_region = None
+    default_category = None

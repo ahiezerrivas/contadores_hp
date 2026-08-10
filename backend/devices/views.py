@@ -4,14 +4,21 @@ import re
 import subprocess
 
 from django.core.management import call_command
-from django.db.models import Q
+from django.db.models import Max, Q, Sum
+from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django_filters import rest_framework as filters
-from rest_framework import viewsets
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from rest_framework import permissions, viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.filters import OrderingFilter
-from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from .permissions import IsAdmin, IsAdminOrReadOnly
 
 from .models import DeviceSnapshot, ExportRun, Impresora, MonthlyCounterEntry, Oficina
 from .serializers import (
@@ -23,6 +30,34 @@ from .serializers import (
     ImpresoraSerializer,
 )
 from .utils import period_sort_key
+
+
+class LoginView(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({
+            "token": token.key,
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "role": user.role,
+            "is_admin": user.is_admin,
+        })
+
+
+@api_view(["GET"])
+@permission_classes([permissions.IsAuthenticated])
+def me(request):
+    return Response({
+        "id": request.user.id,
+        "username": request.user.username,
+        "email": request.user.email,
+        "role": request.user.role,
+        "is_admin": request.user.is_admin,
+    })
 
 
 class DeviceSnapshotFilter(filters.FilterSet):
@@ -38,6 +73,7 @@ class DeviceSnapshotFilter(filters.FilterSet):
 
 
 class ExportRunViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
     queryset = ExportRun.objects.all()
     serializer_class = ExportRunSerializer
 
@@ -70,6 +106,7 @@ class ExportRunViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class DeviceSnapshotViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
     queryset = DeviceSnapshot.objects.select_related("run").all()
     serializer_class = DeviceSnapshotSerializer
     filterset_class = DeviceSnapshotFilter
@@ -229,6 +266,7 @@ class DeviceSnapshotViewSet(viewsets.ReadOnlyModelViewSet):
 
 class MonthlyCounterEntryFilter(filters.FilterSet):
     region = filters.CharFilter(field_name="region")
+    category = filters.CharFilter(field_name="category")
     period = filters.CharFilter(field_name="period")
     printer_status = filters.CharFilter(field_name="impresora__status")
     search = filters.CharFilter(method="filter_search")
@@ -236,11 +274,17 @@ class MonthlyCounterEntryFilter(filters.FilterSet):
 
     class Meta:
         model = MonthlyCounterEntry
-        fields = ["region", "period", "printer_status", "office"]
+        fields = ["region", "category", "period", "printer_status", "office"]
 
     def filter_search(self, queryset, name, value):
+        # OJO: se filtra por el ip_address propio del MonthlyCounterEntry
+        # (snapshot del mes), NO por impresora__ip_address. Este ultimo es
+        # el campo "actual" de la impresora y se sobrescribe en cada import
+        # cuando el dispositivo cambia de IP, lo que haria que busquedas por
+        # una IP antigua/nueva devuelvan tambien meses en los que la
+        # impresora tenia otra IP distinta.
         return queryset.filter(
-            Q(impresora__ip_address__icontains=value)
+            Q(ip_address__icontains=value)
             | Q(impresora__name__icontains=value)
             | Q(impresora__serial_number__icontains=value)
             | Q(office__name__icontains=value)
@@ -248,20 +292,22 @@ class MonthlyCounterEntryFilter(filters.FilterSet):
 
 
 class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
     queryset = MonthlyCounterEntry.objects.all()
     serializer_class = MonthlyCounterEntrySerializer
     filterset_class = MonthlyCounterEntryFilter
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = [
         ("impresora__name", "display_name"),
-        ("impresora__ip_address", "ip_address"),
+        "ip_address",
         ("impresora__serial_number", "serial_number"),
         "region",
+        "category",
         "office__name",
         "office__status",
         "period",
         "monthly_counter",
-        ("impresora__status", "printer_status"),
+        "printer_status",
     ]
 
     def filter_queryset(self, queryset):
@@ -282,6 +328,9 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
         region = request.query_params.get("region")
         if region and region != "__all__" and exclude != "region":
             qs = qs.filter(region=region)
+        category = request.query_params.get("category")
+        if category and category != "__all__" and exclude != "category":
+            qs = qs.filter(category=category)
         period = request.query_params.get("period")
         if period and period != "__all__" and exclude != "period":
             qs = qs.filter(period=period)
@@ -292,6 +341,85 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
         if office and office != "__all__" and exclude != "office":
             qs = qs.filter(office_id=office)
         return qs
+
+    @action(detail=False, methods=["get"], url_path="export")
+    def export(self, request):
+        qs = self.get_queryset().select_related("impresora", "office")
+        qs = self.filter_queryset(qs)
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Contadores"
+
+        headers = [
+            "Nombre",
+            "IP",
+            "Serial",
+            "Region",
+            "Categoria",
+            "Oficina",
+            "Estatus Oficina",
+            "Fecha",
+            "Contador Mensual",
+            "Status Impresora",
+            "Observaciones",
+        ]
+        ws.append(headers)
+        for cell in ws[1]:
+            cell.font = Font(bold=True)
+
+        for e in qs:
+            ws.append([
+                e.impresora.name if e.impresora else "",
+                e.ip_address or "",
+                e.impresora.serial_number if e.impresora else "",
+                e.region or "",
+                e.category or "",
+                e.office.name if e.office else "",
+                e.office.status if e.office else "",
+                e.period or "",
+                e.monthly_counter if e.monthly_counter is not None else 0,
+                e.printer_status or "",
+                e.observations or "",
+            ])
+
+        for col in ws.columns:
+            max_length = 0
+            column = col[0].column_letter
+            for cell in col:
+                try:
+                    if cell.value is not None:
+                        max_length = max(max_length, len(str(cell.value)))
+                except Exception:
+                    pass
+            ws.column_dimensions[column].width = min(max_length + 2, 50)
+
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response["Content-Disposition"] = 'attachment; filename="contadores.xlsx"'
+        wb.save(response)
+        return response
+
+    @action(detail=False, methods=["get"], url_path="by-period")
+    def by_period(self, request):
+        qs = self._filtered_queryset(request)
+        search = request.query_params.get("search")
+        if search:
+            qs = qs.filter(
+                Q(ip_address__icontains=search)
+                | Q(impresora__name__icontains=search)
+                | Q(impresora__serial_number__icontains=search)
+                | Q(office__name__icontains=search)
+            )
+        data = (
+            qs.exclude(period="")
+            .values("period")
+            .annotate(total=Sum("monthly_counter"), last_imported=Max("imported_at"))
+            .order_by("-last_imported")[:12]
+        )
+        return Response(
+            [{"period": d["period"], "total": d["total"] or 0} for d in data]
+        )
 
     @action(detail=False, methods=["get"])
     def filters(self, request):
@@ -304,6 +432,13 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
             .exclude(region="")
             .order_by()
             .values_list("region", flat=True)
+            .distinct()
+        )
+        categories = sorted(
+            self._filtered_queryset(request, exclude="category")
+            .exclude(category="")
+            .order_by()
+            .values_list("category", flat=True)
             .distinct()
         )
         periods = sorted(
@@ -334,6 +469,7 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
         )
         return Response({
             "regions": regions,
+            "categories": categories,
             "periods": periods,
             "printer_statuses": printer_statuses,
             "offices": offices,
@@ -441,6 +577,7 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
 
 
 class OficinaViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
     queryset = Oficina.objects.all()
     serializer_class = OficinaSerializer
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
@@ -456,6 +593,7 @@ class OficinaViewSet(viewsets.ModelViewSet):
 
 
 class ImpresoraViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAdminOrReadOnly]
     queryset = Impresora.objects.all()
     serializer_class = ImpresoraSerializer
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]

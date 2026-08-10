@@ -116,7 +116,7 @@ C:\Program Files\PostgreSQL\16\bin\pg_dump.exe
 Ajusta el comando con la ruta completa:
 
 ```powershell
-$fecha = Get-Date -Format "yyyy-MM-dd-HHmm"; & "C:\Program Files\PostgreSQL\18\bin\pg_dump.exe" -h localhost -U postgres -d hp_dispositivos -f "db_backup_$fecha.sql"
+ & "C:\Program Files\PostgreSQL\18\bin\pg_dump.exe" -h localhost -U postgres -d hp_dispositivos -f "db_backup.sql"
 ```
 
 Si no sabes dónde está PostgreSQL, búscalo con PowerShell:

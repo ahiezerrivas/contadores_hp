@@ -1,5 +1,51 @@
+import re
+
 from django.db import models
 from django.utils import timezone
+
+
+# Estatus canonicos de impresora. Se usan tanto en Impresora.status como en
+# MonthlyCounterEntry.printer_status para evitar que queden valores
+# duplicados por diferencias de mayusculas/minusculas (ej. "Cierre
+# definitivo" vs "cierre definitivo").
+PRINTER_STATUS_CHOICES = [
+    "Instalado",
+    "Cierre temporal",
+    "Pendiente Retiro",
+    "Cierre definitivo",
+    "Embalada",
+    "Perdida Total",
+    "Resguardo en la Agencia",
+    "Desistalada",
+]
+
+_PRINTER_STATUS_LOOKUP = {value.lower(): value for value in PRINTER_STATUS_CHOICES}
+
+
+def normalize_printer_status(value):
+    """Normaliza un estatus de impresora a su forma canonica (case-insensitive).
+    Si el valor no coincide con ningun estatus conocido, se devuelve tal cual
+    (solo con espacios sobrantes recortados) para no perder informacion."""
+    if not value:
+        return value
+    stripped = value.strip()
+    return _PRINTER_STATUS_LOOKUP.get(stripped.lower(), stripped)
+
+
+# Variantes de region tipo "Metro I", "Metro II", etc. se unifican en "Metro".
+_METRO_REGION_RE = re.compile(r"^metro\s+[ivxlcdm]+$", re.IGNORECASE)
+
+
+def normalize_region(value):
+    """Normaliza el nombre de la region. Actualmente unifica "Metro I",
+    "Metro II", etc. en "Metro"; el resto de valores se devuelven tal cual
+    (solo con espacios sobrantes recortados)."""
+    if not value:
+        return value
+    stripped = value.strip()
+    if _METRO_REGION_RE.match(stripped):
+        return "Metro"
+    return stripped
 
 
 class ExportRun(models.Model):
@@ -109,12 +155,22 @@ class Impresora(models.Model):
     serial_number = models.CharField(
         "Serial", max_length=100, unique=True, null=True, blank=True, default=None
     )
-    status = models.CharField("Status", max_length=100, blank=True, default="")
+    status = models.CharField(
+        "Status",
+        max_length=100,
+        blank=True,
+        default="",
+        choices=[(value, value) for value in PRINTER_STATUS_CHOICES],
+    )
 
     class Meta:
         verbose_name = "Impresora"
         verbose_name_plural = "Impresoras"
         ordering = ["name"]
+
+    def save(self, *args, **kwargs):
+        self.status = normalize_printer_status(self.status)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -145,7 +201,22 @@ class MonthlyCounterEntry(models.Model):
         "IP del periodo", max_length=45, blank=True, default=""
     )
     printer_status = models.CharField(
-        "Status Impresora del periodo", max_length=100, blank=True, default=""
+        "Status Impresora del periodo",
+        max_length=100,
+        blank=True,
+        default="",
+        choices=[(value, value) for value in PRINTER_STATUS_CHOICES],
+    )
+    agency_status = models.CharField(
+        "Estatus Agencia del periodo",
+        max_length=100,
+        blank=True,
+        default="",
+        help_text=(
+            "Valor de la columna 'Estatus Agencia' del Excel de Oficina para ese "
+            "periodo, tal cual viene reportado (no confundir con Oficina.status, "
+            "que es el estatus actual del catalogo de oficinas)."
+        ),
     )
     impresora = models.ForeignKey(
         Impresora,
@@ -192,6 +263,11 @@ class MonthlyCounterEntry(models.Model):
             models.Index(fields=["region", "period"]),
             models.Index(fields=["ip_address", "period"]),
         ]
+
+    def save(self, *args, **kwargs):
+        self.printer_status = normalize_printer_status(self.printer_status)
+        self.region = normalize_region(self.region)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         nombre = self.impresora.name if self.impresora else ""

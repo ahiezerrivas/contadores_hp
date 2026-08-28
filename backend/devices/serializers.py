@@ -72,6 +72,7 @@ class MonthlyCounterEntrySerializer(serializers.ModelSerializer):
             "office",
             "office_name",
             "office_status",
+            "agency_status",
             "floor",
             "location",
             "ip_address",

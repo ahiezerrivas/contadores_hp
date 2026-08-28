@@ -58,6 +58,7 @@ HEADER_TO_FIELD = {
     "fecha": "period",
     "observaciones": "observations",
     "status impresora": "printer_status",
+    "estatus agencia": "agency_status",
 }
 
 NUMERIC_FIELDS = {
@@ -74,7 +75,7 @@ NUMERIC_FIELDS = {
 TEXT_FIELDS = {
     "region", "floor", "location",
     "display_name", "printer_model", "ip_address", "serial_number", "observations",
-    "printer_status",
+    "printer_status", "agency_status",
 }
 
 

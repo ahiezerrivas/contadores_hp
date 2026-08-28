@@ -48,6 +48,9 @@ export const getMonthlyCounterFilters = (params = {}) =>
 export const getMonthlyCountersByPeriod = (params = {}) =>
   apiClient.get("/monthly-counters/by-period/", { params }).then((r) => r.data);
 
+export const getMonthlyCountersTotal = (params = {}) =>
+  apiClient.get("/monthly-counters/total/", { params }).then((r) => r.data);
+
 export const updateMonthlyCounter = (id, data) =>
   apiClient.patch(`/monthly-counters/${id}/`, data).then((r) => r.data);
 

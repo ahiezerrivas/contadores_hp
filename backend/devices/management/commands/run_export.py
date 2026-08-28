@@ -11,7 +11,6 @@ Pensado para ser invocado periodicamente (ej. Windows Task Scheduler).
 
 import pyodbc
 from django.conf import settings
-from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -117,12 +116,3 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(f"Run #{run.id}: {len(rows)} dispositivos guardados.")
         )
-
-        try:
-            call_command("actualizar_semana_actual")
-        except Exception as e:
-            self.stderr.write(
-                self.style.WARNING(
-                    f"No se pudo actualizar la semana actual automaticamente: {e}"
-                )
-            )

@@ -15,6 +15,7 @@ import {
   getMonthlyCounterFilters,
   getMonthlyCounters,
   getMonthlyCountersByPeriod,
+  getMonthlyCountersTotal,
   pingDevice,
   updateImpresoraStatus,
   updateMonthlyCounter,
@@ -22,6 +23,17 @@ import {
 import Modal from "../components/Modal.jsx";
 
 const ALL = "__all__";
+
+const PRINTER_STATUS_OPTIONS = [
+  "Instalado",
+  "Cierre temporal",
+  "Pendiente Retiro",
+  "Cierre definitivo",
+  "Embalada",
+  "Perdida Total",
+  "Resguardo en la Agencia",
+  "Desistalada",
+];
 
 function FilterSelect({ label, value, onChange, options }) {
   return (
@@ -218,10 +230,21 @@ function Counters({ isAdmin = false }) {
 
   const totalPages = useMemo(() => Math.max(1, Math.ceil(data.count / 50)), [data.count]);
 
-  const totalMonthly = useMemo(
-    () => data.results.reduce((sum, e) => sum + (Number(e.monthly_counter) || 0), 0),
-    [data.results]
-  );
+  const [totalMonthly, setTotalMonthly] = useState(0);
+
+  useEffect(() => {
+    const params = {};
+    if (region !== ALL) params.region = region;
+    if (category !== ALL) params.category = category;
+    if (period !== ALL) params.period = period;
+    if (printerStatus !== ALL) params.printer_status = printerStatus;
+    if (office !== ALL) params.office = office;
+    if (search.trim()) params.search = search.trim();
+
+    getMonthlyCountersTotal(params)
+      .then((res) => setTotalMonthly(res.total || 0))
+      .catch(() => setTotalMonthly(0));
+  }, [region, category, period, printerStatus, office, search]);
 
   useEffect(() => {
     setChartLoading(true);
@@ -234,7 +257,7 @@ function Counters({ isAdmin = false }) {
     if (search.trim()) params.search = search.trim();
 
     getMonthlyCountersByPeriod(params)
-      .then((data) => setPeriodData(data))
+      .then((data) => setPeriodData([...data].reverse()))
       .catch(() => setPeriodData([]))
       .finally(() => setChartLoading(false));
   }, [region, category, period, printerStatus, office, search]);
@@ -388,7 +411,7 @@ function Counters({ isAdmin = false }) {
                   <SortHeader field="region">Region</SortHeader>
                   <SortHeader field="category">Categoria</SortHeader>
                   <SortHeader field="office__name">Nombre Oficina</SortHeader>
-                  <SortHeader field="office__status">Estatus Oficina</SortHeader>
+                  <SortHeader field="agency_status">Estatus Agencia</SortHeader>
                   <SortHeader field="period">Fecha</SortHeader>
                   <SortHeader field="monthly_counter" align="right">Contador Mensual</SortHeader>
                   <SortHeader field="printer_status">Status Impresora</SortHeader>
@@ -419,7 +442,7 @@ function Counters({ isAdmin = false }) {
                     <td className="px-2 py-1.5 truncate">{entry.region || "-"}</td>
                     <td className="px-2 py-1.5 truncate">{entry.category || "-"}</td>
                     <td className="px-2 py-1.5 truncate">{entry.office_name || "-"}</td>
-                    <td className="px-2 py-1.5 truncate">{entry.office_status || "-"}</td>
+                    <td className="px-2 py-1.5 truncate">{entry.agency_status || "-"}</td>
                     <td className="px-2 py-1.5 truncate">{entry.period || "-"}</td>
                     <td className="px-2 py-1.5 text-right truncate">{formatNumber(entry.monthly_counter)}</td>
                     <td className="px-2 py-1.5 truncate">{entry.printer_status || "-"}</td>
@@ -593,7 +616,7 @@ function DetailSection({ title, children }) {
   );
 }
 
-function Field({ label, name, value, editing, onChange, type = "text" }) {
+function Field({ label, name, value, editing, onChange, type = "text", options = [] }) {
   if (editing) {
     return (
       <label className="block">
@@ -605,6 +628,22 @@ function Field({ label, name, value, editing, onChange, type = "text" }) {
             rows={2}
             className="mt-0.5 w-full border rounded-md px-2 py-1 text-sm"
           />
+        ) : type === "select" ? (
+          <select
+            value={value ?? ""}
+            onChange={(e) => onChange(name, e.target.value)}
+            className="mt-0.5 w-full border rounded-md px-2 py-1 text-sm bg-white"
+          >
+            <option value="">-</option>
+            {!options.includes(value) && value && (
+              <option value={value}>{value}</option>
+            )}
+            {options.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
         ) : (
           <input
             type={type}
@@ -735,6 +774,7 @@ function CounterDetail({ entry, form, editing, saving, saveError, isAdmin, onCha
         <Field label="Region" name="region" value={form.region} editing={editing} onChange={onChange} />
         <Field label="Categoria" name="category" value={form.category} editing={editing} onChange={onChange} />
         <Field label="Nombre Oficina" name="office_name" value={form.office_name} editing={editing} onChange={onChange} />
+        <Field label="Estatus Agencia (del periodo)" value={form.agency_status} editing={false} onChange={() => {}} />
         <Field label="Piso" name="floor" value={form.floor} editing={editing} onChange={onChange} />
         <Field label="Nombre de Host Sede" name="host_name" value={form.host_name} editing={editing} onChange={onChange} />
         <Field label="Asignada o Ubicacion" name="location" value={form.location} editing={editing} onChange={onChange} />
@@ -744,7 +784,15 @@ function CounterDetail({ entry, form, editing, saving, saveError, isAdmin, onCha
         <Field label="DisplayName" value={form.impresora?.name} editing={false} onChange={() => {}} />
         <Field label="IPv4Address (del periodo)" value={form.ip_address} editing={false} onChange={() => {}} />
         <Field label="SerialNumber" value={form.impresora?.serial_number} editing={false} onChange={() => {}} />
-        <Field label="Status Impresora (del periodo)" value={form.printer_status} editing={false} onChange={() => {}} />
+        <Field
+          label="Status Impresora (del periodo)"
+          name="printer_status"
+          value={form.printer_status}
+          editing={editing}
+          onChange={onChange}
+          type="select"
+          options={PRINTER_STATUS_OPTIONS}
+        />
       </DetailSection>
 
       <div className="mb-4">

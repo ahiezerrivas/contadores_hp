@@ -3,9 +3,10 @@ Detecta automaticamente en que semana del mes estamos (bloques lunes-viernes,
 contados desde el primer lunes del mes) y actualiza MonthlyCounterEntry para
 esa semana usando los DeviceSnapshot mas recientes.
 
-Pensado para correrse despues de cada run_export (se invoca automaticamente
-al final de run_export), asi los contadores quedan al dia sin depender de
-que alguien corra actualizar_contadores_semana manualmente cada semana.
+Pensado para correrse despues de cada run_export. Por ahora NO se invoca
+automaticamente al final de run_export (esa integracion se revisara mas
+adelante); mientras tanto hay que correr este comando manualmente o
+programarlo aparte para mantener los contadores al dia.
 
 Si la fecha de referencia cae antes del primer lunes del mes (dias sueltos
 que no pertenecen a ninguna semana segun la regla de negocio), no hace nada.

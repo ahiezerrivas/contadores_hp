@@ -268,7 +268,7 @@ class MonthlyCounterEntryFilter(filters.FilterSet):
     region = filters.CharFilter(field_name="region")
     category = filters.CharFilter(field_name="category")
     period = filters.CharFilter(field_name="period")
-    printer_status = filters.CharFilter(field_name="impresora__status")
+    printer_status = filters.CharFilter(field_name="printer_status")
     search = filters.CharFilter(method="filter_search")
     office = filters.NumberFilter(field_name="office_id")
 
@@ -304,7 +304,7 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
         "region",
         "category",
         "office__name",
-        "office__status",
+        "agency_status",
         "period",
         "monthly_counter",
         "printer_status",
@@ -336,7 +336,7 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
             qs = qs.filter(period=period)
         printer_status = request.query_params.get("printer_status")
         if printer_status and printer_status != "__all__" and exclude != "printer_status":
-            qs = qs.filter(impresora__status=printer_status)
+            qs = qs.filter(printer_status=printer_status)
         office = request.query_params.get("office")
         if office and office != "__all__" and exclude != "office":
             qs = qs.filter(office_id=office)
@@ -357,7 +357,7 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
             "Region",
             "Categoria",
             "Oficina",
-            "Estatus Oficina",
+            "Estatus Agencia",
             "Fecha",
             "Contador Mensual",
             "Status Impresora",
@@ -375,7 +375,7 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
                 e.region or "",
                 e.category or "",
                 e.office.name if e.office else "",
-                e.office.status if e.office else "",
+                e.agency_status or "",
                 e.period or "",
                 e.monthly_counter if e.monthly_counter is not None else 0,
                 e.printer_status or "",
@@ -399,6 +399,22 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
         response["Content-Disposition"] = 'attachment; filename="contadores.xlsx"'
         wb.save(response)
         return response
+
+    @action(detail=False, methods=["get"])
+    def total(self, request):
+        """Suma de monthly_counter para TODOS los registros que cumplen los
+        filtros actuales (no solo la pagina visible)."""
+        qs = self._filtered_queryset(request)
+        search = request.query_params.get("search")
+        if search:
+            qs = qs.filter(
+                Q(ip_address__icontains=search)
+                | Q(impresora__name__icontains=search)
+                | Q(impresora__serial_number__icontains=search)
+                | Q(office__name__icontains=search)
+            )
+        total = qs.aggregate(total=Sum("monthly_counter"))["total"] or 0
+        return Response({"total": total})
 
     @action(detail=False, methods=["get"], url_path="by-period")
     def by_period(self, request):
@@ -452,10 +468,9 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
         )
         printer_statuses = sorted(
             self._filtered_queryset(request, exclude="printer_status")
-            .exclude(impresora__status__isnull=True)
-            .exclude(impresora__status="")
+            .exclude(printer_status="")
             .order_by()
-            .values_list("impresora__status", flat=True)
+            .values_list("printer_status", flat=True)
             .distinct()
         )
         office_qs = self._filtered_queryset(request, exclude="office")
@@ -514,9 +529,19 @@ class MonthlyCounterEntryViewSet(viewsets.ModelViewSet):
         end_date = timezone.localtime().date()
         start_date = end_date - timezone.timedelta(days=days - 1)
 
-        qs = self._filtered_queryset(request).filter(impresora__isnull=False).select_related(
-            "impresora", "office"
-        )
+        # OJO: a diferencia de los demas usos de _filtered_queryset, aqui
+        # printer_status debe filtrar por el estatus ACTUAL de la impresora
+        # (Impresora.status), no por el snapshot historico del periodo
+        # (MonthlyCounterEntry.printer_status). Este endpoint recorre todos
+        # los periodos y busca impresoras que HOY deberian estar activas,
+        # no importa lo que dijera un snapshot antiguo.
+        qs = self._filtered_queryset(request, exclude="printer_status").filter(
+            impresora__isnull=False
+        ).select_related("impresora", "office")
+
+        printer_status = request.query_params.get("printer_status")
+        if printer_status and printer_status != "__all__":
+            qs = qs.filter(impresora__status=printer_status)
 
         results = []
         seen_keys = set()

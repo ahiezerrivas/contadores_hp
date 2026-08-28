@@ -82,6 +82,27 @@ class OficinaAsignadaFilter(admin.SimpleListFilter):
         return queryset
 
 
+class ImpresoraStatusFilter(admin.SimpleListFilter):
+    title = "Status impresora"
+    parameter_name = "impresora__status"
+
+    def lookups(self, request, model_admin):
+        statuses = (
+            Impresora.objects.exclude(status="")
+            .values_list("status", flat=True)
+            .distinct()
+        )
+        seen = {}
+        for s in statuses:
+            seen.setdefault(s.lower(), s)
+        return sorted((v, v) for v in seen.values())
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(impresora__status__iexact=self.value())
+        return queryset
+
+
 @admin.register(MonthlyCounterEntry)
 class MonthlyCounterEntryAdmin(admin.ModelAdmin):
     list_display = (
@@ -96,7 +117,7 @@ class MonthlyCounterEntryAdmin(admin.ModelAdmin):
         "zero_counter_devices",
         "impresora_status",
     )
-    list_filter = ("region", "category", "period", "impresora__status", OficinaAsignadaFilter)
+    list_filter = ("region", "category", "period", ImpresoraStatusFilter, OficinaAsignadaFilter)
     search_fields = ("impresora__ip_address", "impresora__name", "impresora__serial_number", "office__name")
     ordering = ("-period", "region", "office__name")
     fieldsets = (

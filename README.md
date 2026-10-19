@@ -27,6 +27,10 @@ hp/
 
 ## Instalación
 
+Para desarrollo local, consulta [README_LOCAL.md](README_LOCAL.md).
+
+Para ejecutar la aplicación de forma permanente con IIS y NSSM, consulta [README_IIS_NSSM.md](README_IIS_NSSM.md).
+
 ### 1. Backend
 
 ```powershell
@@ -188,6 +192,48 @@ python backend\manage.py import_counters "Contador de Pagina Torre Junio del 01 
 
 
 npx vite --host
+
+## Despliegue en Windows con IIS
+
+Para producción, no uses `runserver` ni `vite --host`. IIS sirve el frontend compilado y reenvía `/api` hacia Django ejecutándose con Waitress.
+
+### Preparar el proyecto
+
+Desde PowerShell en la raíz del proyecto:
+
+```powershell
+.\venv\Scripts\python.exe -m pip install -r backend\requirements.txt
+.\venv\Scripts\python.exe backend\manage.py migrate
+.\venv\Scripts\python.exe backend\manage.py collectstatic --noinput
+cd frontend
+npm install
+npm run build
+```
+
+El frontend listo para IIS queda en `frontend\dist`. El archivo `frontend\public\web.config` se copia automáticamente a esa carpeta y configura las rutas de React y el proxy de `/api`.
+
+### Configurar IIS
+
+1. Instala IIS.
+2. Instala **URL Rewrite** y **Application Request Routing (ARR)** mediante sus instaladores MSI independientes. Microsoft retiró Web Platform Installer en 2022, por lo que no debe usarse esa herramienta.
+3. En IIS Manager, habilita **Proxy** en `Application Request Routing Cache > Server Proxy Settings`.
+4. Crea un sitio cuyo directorio físico sea la ruta absoluta a `frontend\dist`.
+5. Configura el binding HTTP, por ejemplo en el puerto `80`.
+6. En `backend\.env`, configura `DEBUG=False` y `ALLOWED_HOSTS` con el nombre o IP del servidor.
+
+Las páginas oficiales de descarga son [URL Rewrite](https://www.iis.net/downloads/microsoft/url-rewrite) y [Application Request Routing](https://www.iis.net/downloads/microsoft/application-request-routing). Si una página redirige o no ofrece el instalador, busca en Microsoft Download Center los instaladores x64 `rewrite_amd64_en-US.msi` y `requestRouter_amd64.msi`.
+
+### Ejecutar Django como servicio
+
+Instala NSSM y crea un servicio apuntando a:
+
+```text
+Application:  C:\ruta\hp\venv\Scripts\python.exe
+Arguments:    -m waitress --listen=10.0.114.27:8001 config.wsgi:application
+Startup dir:  C:\ruta\hp\backend
+```
+
+Inicia el servicio y verifica primero `http://10.0.114.27:8001/api/`. Después accede al sitio mediante IIS. Si el puerto debe ser accesible desde otra computadora, permite TCP 8001 en el Firewall de Windows.
 
 
 

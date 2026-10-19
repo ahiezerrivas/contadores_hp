@@ -24,6 +24,33 @@ import Modal from "../components/Modal.jsx";
 
 const ALL = "__all__";
 
+const SPANISH_MONTHS = {
+  ene: 0,
+  feb: 1,
+  mar: 2,
+  abr: 3,
+  may: 4,
+  jun: 5,
+  jul: 6,
+  ago: 7,
+  sep: 8,
+  oct: 9,
+  nov: 10,
+  dic: 11,
+};
+
+const periodSortValue = (period) => {
+  const value = String(period ?? "").trim().toLowerCase();
+  const isoMatch = value.match(/^(\d{4})[-/]([0-9]{1,2})/);
+  if (isoMatch) return Number(isoMatch[1]) * 12 + Number(isoMatch[2]) - 1;
+
+  const spanishMatch = value.match(/^(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)[- /]?(\d{2,4})/);
+  if (!spanishMatch) return Number.MAX_SAFE_INTEGER;
+
+  const year = Number(spanishMatch[2]);
+  return (year < 100 ? year + 2000 : year) * 12 + SPANISH_MONTHS[spanishMatch[1]];
+};
+
 const PRINTER_STATUS_OPTIONS = [
   "Instalado",
   "Cierre temporal",
@@ -257,7 +284,11 @@ function Counters({ isAdmin = false }) {
     if (search.trim()) params.search = search.trim();
 
     getMonthlyCountersByPeriod(params)
-      .then((data) => setPeriodData([...data].reverse()))
+      .then((data) =>
+        setPeriodData(
+          [...data].sort((first, second) => periodSortValue(first.period) - periodSortValue(second.period)),
+        ),
+      )
       .catch(() => setPeriodData([]))
       .finally(() => setChartLoading(false));
   }, [region, category, period, printerStatus, office, search]);
@@ -373,7 +404,7 @@ function Counters({ isAdmin = false }) {
               {exporting ? "Exportando..." : "Exportar Excel"}
             </button>
             <div className="text-right">
-              <p className="text-xs text-slate-500 uppercase tracking-wide">Total Contador Mensual</p>
+              <p className="text-xs text-slate-500 uppercase tracking-wide">Total Contador</p>
               <p className="text-lg font-semibold text-slate-800">{formatNumber(totalMonthly)}</p>
             </div>
           </div>
